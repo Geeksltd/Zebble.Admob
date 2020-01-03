@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Zebble.Admob</id>
+    <version>1.1.100</version>
+    <title>Google Adv for Zebble (Xamarin)</title>
+    <projectUrl>https://github.com/Geeksltd/Zebble.Admob</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.Admob/master/Shared/NuGet/Icon.png</iconUrl>
+    <copyright>Copyright © 2019 Geeks Ltd - All rights reserved.</copyright>
+    <description>A Zebble plugin to show advertisement.</description>
+    <authors>Geeks Ltd</authors>
+    <owners>Geeks Ltd</owners>
+    <dependencies>
+      <group targetFramework="MonoAndroid10">
+        <dependency id="Xamarin.GooglePlayServices.Ads" version="71.1720.1"></dependency>
+        <dependency id="Xamarin.GooglePlayServices.Ads.Lite" version="71.1720.1"></dependency>
+      </group>
+      <group targetFramework="Xamarin.iOS10">
+        <dependency id="Xamarin.Firebase.iOS.AdMob" version="7.47.0"></dependency>
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\lib\Zebble.Admob.iOS.*" target="lib\Xamarin.iOS10\" />
+    <file src="..\..\lib\Zebble.Admob.Android.*" target="lib\MonoAndroid10\" />
+  </files>
+</package>
