@@ -1,4 +1,5 @@
 ﻿using Android.Gms.Ads.Formats;
+using Android.Views;
 
 namespace Zebble
 {
@@ -9,6 +10,8 @@ namespace Zebble
         public AdmobAndroidMediaView(AdmobMediaView view) : base(Renderer.Context)
         {
             View = view;
+
+            LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
         }
     }
 }

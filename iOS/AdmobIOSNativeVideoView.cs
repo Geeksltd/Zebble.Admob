@@ -42,14 +42,7 @@ namespace Zebble
             else View.CallToActionView?.Ignored();
 
             if (View.IconView != null && ad.Icon != null)
-            {
-                using (NSData imageData = ad.Icon.Image.AsPNG())
-                {
-                    var image = new byte[imageData.Length];
-                    System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, image, 0, Convert.ToInt32(imageData.Length));
-                    View.IconView.ImageData = image;
-                }
-            }
+                View.IconView.ImageData = ConvertUIImageToByteArray(ad.Icon?.Image);
             else View.IconView?.Ignored();
 
             if (View.PriceView != null && ad.Price.HasValue())
@@ -78,6 +71,18 @@ namespace Zebble
             NativeView.NativeAd = ad;
         }
 
+        byte[] ConvertUIImageToByteArray(UIImage img)
+        {
+            if (img == null) return new byte[0];
+
+            using (NSData imageData = img.AsPNG())
+            {
+                var image = new byte[imageData.Length];
+                System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, image, 0, Convert.ToInt32(imageData.Length));
+                return image;
+            }
+        }
+
         class IOSNativeAdListener : AdmobIOSListener<AdmobNativeVideoView>, IUnifiedNativeAdLoaderDelegate, IUnifiedNativeAdDelegate
         {
             AdmobIOSNativeVideoView NativeView;
@@ -89,7 +94,17 @@ namespace Zebble
 
             public void DidReceiveUnifiedNativeAd(AdLoader adLoader, UnifiedNativeAd nativeAd)
             {
-                NativeView.View.OnAdReady.Raise();
+                NativeView.View.OnAdReady.Raise(new AdmobNativeInfo
+                {
+                    Headline = nativeAd.Headline,
+                    Icon = NativeView.ConvertUIImageToByteArray(nativeAd.Icon?.Image),
+                    Price = nativeAd.Price,
+                    Advertiser = nativeAd.Advertiser,
+                    Body = nativeAd.Body,
+                    StarRating = (double?)(nativeAd.StarRating ?? null),
+                    Store = nativeAd.Store,
+                    HasData = nativeAd.Headline.OrNullIfEmpty() == null ? false : true
+                });
                 NativeView.CreateAdView(nativeAd);
             }
 

@@ -57,15 +57,7 @@ namespace Zebble
             else View.CallToActionView?.Ignored();
 
             if (View.IconView != null && ad.Icon != null)
-            {
-                var drawable = ad.Icon.Drawable;
-                var bitmap = ((BitmapDrawable)drawable).Bitmap;
-                using (var stream = new MemoryStream())
-                {
-                    bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
-                    View.IconView.ImageData = stream.ReadAllBytes();
-                }
-            }
+                View.IconView.ImageData = ConvertDrawableToByteArray(ad.Icon?.Drawable);
             else View.IconView?.Ignored();
 
             if (View.PriceView != null && ad.Price.HasValue())
@@ -96,6 +88,18 @@ namespace Zebble
             if (vc.HasVideoContent) vc.SetVideoLifecycleCallbacks(new VideoControllerCallback(View));
         }
 
+        byte[] ConvertDrawableToByteArray(Drawable drawable)
+        {
+            if (drawable == null) return new byte[0];
+
+            var bitmap = ((BitmapDrawable)drawable).Bitmap;
+            using (var stream = new MemoryStream())
+            {
+                bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+                return stream.ReadAllBytes();
+            }
+        }
+
         class VideoControllerCallback : VideoController.VideoLifecycleCallbacks
         {
             AdmobNativeVideoView View;
@@ -123,7 +127,17 @@ namespace Zebble
 
             public void OnUnifiedNativeAdLoaded(UnifiedNativeAd ad)
             {
-                Result.View.OnAdReady.Raise();
+                Result.View.OnAdReady.Raise(new AdmobNativeInfo
+                {
+                    Headline = ad.Headline,
+                    Icon = Result.ConvertDrawableToByteArray(ad.Icon?.Drawable),
+                    Price = ad.Price,
+                    Advertiser = ad.Advertiser,
+                    Body = ad.Body,
+                    StarRating = ad.StarRating?.DoubleValue(),
+                    Store = ad.Store,
+                    HasData = ad.Headline.OrNullIfEmpty() == null ? false : true
+                });
                 Result.CreateAdView(ad);
             }
         }

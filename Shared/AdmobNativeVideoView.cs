@@ -4,7 +4,7 @@ namespace Zebble
 {
     public partial class AdmobNativeVideoView : AdmobView, IZebbleAdView, IRenderedBy<AdmobViewRenderer>
     {
-        public readonly AsyncEvent OnAdReady = new AsyncEvent();
+        public readonly AsyncEvent<AdmobNativeInfo> OnAdReady = new AsyncEvent<AdmobNativeInfo>();
         public readonly AsyncEvent OnVideoEnded = new AsyncEvent();
 
         public AdmobTypes AdType => AdmobTypes.Native;
