@@ -14,11 +14,6 @@ namespace Zebble
                 case AdmobTypes.Banner:
                     Result = new AdmobAndroidBannerView((AdmobBannerView)renderer.View);
                     return Task.FromResult(Result);
-                case AdmobTypes.Interstitial:
-                    Result = new AdmobAndroidInterstitialView((AdmobInterstitialView)renderer.View);
-                    return Task.FromResult(Result);
-                case AdmobTypes.Rewarded:
-                    throw new System.NotImplementedException();
                 case AdmobTypes.Native:
                     Result = new AdmobAndroidNativeVideoView((AdmobNativeVideoView)renderer.View);
                     return Task.FromResult(Result);

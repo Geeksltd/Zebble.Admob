@@ -8,4 +8,12 @@
         NoFill = 3
     }
 
+    enum AdmobListenerRewardedError
+    {
+        InternalError = 0,
+        AdReused = 1,
+        NotReady = 2,
+        AppNotForeground = 3
+    }
+
 }

@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)AdmobNativeVideoView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobInterstitialView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobBannerView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdmobRewardedView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IZebbleAdView.cs" />

@@ -26,6 +26,5 @@ namespace Zebble
         public AdmobMediaView MediaView { get; set; }
 
         public bool IsVideoMuted { get; set; }
-
     }
 }

@@ -1,18 +1,23 @@
 ﻿using Android.Gms.Ads;
-using Android.Widget;
 
 namespace Zebble
 {
-    class AdmobAndroidInterstitialView : FrameLayout, IZebbleAdNativeView<AdmobInterstitialView>
+    class AdmobAndroidInterstitialView
     {
         public AdmobInterstitialView View { get; set; }
         InterstitialAd interstitialAd;
 
-        public AdmobAndroidInterstitialView(AdmobInterstitialView view) : base(Renderer.Context)
+        public AdmobAndroidInterstitialView(AdmobInterstitialView view)
         {
             View = view;
 
-            view.OnAdButtonTapped.Handle(() => { if (interstitialAd.IsLoaded) interstitialAd.Show(); });
+            View.OnShow.Handle(() =>
+            {
+                if (interstitialAd.IsLoaded)
+                    interstitialAd.Show();
+                else
+                    View.OnAdFailed.Raise("The ad has not loaded yet! please use the Show method just after the ad loaded completely");
+            });
 
             LoadAd();
         }
@@ -21,24 +26,33 @@ namespace Zebble
         {
             interstitialAd = new InterstitialAd(Renderer.Context);
             interstitialAd.AdUnitId = View.UnitId;
-            interstitialAd.AdListener = new AndroidAdListener(this);
+            interstitialAd.AdListener = new AndroidAdListener(View);
             interstitialAd.LoadAd(new AdRequest.Builder().Build());
         }
 
-        class AndroidAdListener : AdmobAndroidListener<AdmobInterstitialView>
+        class AndroidAdListener : AdListener
         {
-            AdmobAndroidInterstitialView NativeView;
+            AdmobInterstitialView View;
 
-            public AndroidAdListener(AdmobAndroidInterstitialView nativeView) : base(nativeView)
+            public AndroidAdListener(AdmobInterstitialView view)
             {
-                NativeView = nativeView;
+                View = view;
             }
 
-            public override void OnAdClosed()
+            public override void OnAdClicked() => View.OnAdTapped.Raise();
+
+            public override void OnAdClosed() => View.OnAdClosed.Raise();
+
+            public override void OnAdLoaded() => View.OnAdLoaded.Raise();
+
+            public override void OnAdFailedToLoad(int p0)
             {
-                NativeView.interstitialAd.LoadAd(new AdRequest.Builder().Build());
-                base.OnAdClosed();
+                string error;
+                AdmobAndroidListener.OnAdError(p0, out error);
+                View.OnAdFailed.Raise(error);
             }
+
+            public override void OnAdOpened() => View.OnAdOpened.Raise();
         }
     }
 }

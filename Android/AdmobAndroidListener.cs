@@ -19,8 +19,19 @@ namespace Zebble
 
         public override void OnAdFailedToLoad(int p0)
         {
-            var error = "";
-            switch (p0)
+            string error;
+            AdmobAndroidListener.OnAdError(p0, out error);
+            AdView.View.OnAdFailed.Raise(error);
+        }
+
+        public override void OnAdOpened() => AdView.View.OnAdOpened.Raise();
+    }
+
+    static class AdmobAndroidListener
+    {
+        public static void OnAdError(int arg, out string error)
+        {
+            switch (arg)
             {
                 case (int)AdmobListenerErrors.InternalError:
                     error = "Something happened internally; for instance, an invalid response was received from the ad server.";
@@ -38,11 +49,28 @@ namespace Zebble
                     error = null;
                     break;
             }
-
-            AdView.View.OnAdFailed.Raise(error);
         }
-
-        public override void OnAdOpened() => AdView.View.OnAdOpened.Raise();
+        public static void OnRewardedAdError(int arg, out string error)
+        {
+            switch (arg)
+            {
+                case (int)AdmobListenerRewardedError.InternalError:
+                    error = "Something happened internally; for instance, an invalid response was received from the ad server.";
+                    break;
+                case (int)AdmobListenerRewardedError.AdReused:
+                    error = "The rewarded ad has already been shown. RewardedAd objects are one-time use objects and can only be shown once. Instantiate and load a new RewardedAd to display a new ad.";
+                    break;
+                case (int)AdmobListenerRewardedError.NotReady:
+                    error = "The ad has not been successfully loaded.";
+                    break;
+                case (int)AdmobListenerRewardedError.AppNotForeground:
+                    error = "The ad can not be shown when the app is not in foreground.";
+                    break;
+                default:
+                    error = null;
+                    break;
+            }
+        }
 
     }
 }
