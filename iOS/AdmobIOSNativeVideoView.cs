@@ -20,8 +20,7 @@ namespace Zebble
             adloader.Delegate = new IOSNativeAdListener(this);
             adloader.LoadRequest(Request.GetDefaultRequest());
         }
-
-
+        
         void CreateAdView(UnifiedNativeAd ad)
         {
             NativeView = new UnifiedNativeAdView();

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Widget;
+using Zebble.AndroidOS;
+using Android.Views;
 
 namespace Zebble
 {
@@ -12,10 +15,19 @@ namespace Zebble
     {
         public AdmobNativeVideoView View { get; set; }
         UnifiedNativeAdView NativeView;
+        UnifiedNativeAd NativeAd;
+        Android.Widget.Button ActionButton;
+
+        ConcurrentList<BaseGestureRecognizer> Recognizers = new ConcurrentList<BaseGestureRecognizer>();
+        WeakReference<Zebble.View> LatestHandler = new WeakReference<Zebble.View>(null);
+        Point LatestPoint;
 
         public AdmobAndroidNativeVideoView(AdmobNativeVideoView view) : base(Renderer.Context)
         {
             View = view;
+
+            AddGestureRecognizer(new TapGestureRecognizer { OnGestureRecognized = HandleTapped });
+            AddGestureRecognizer(new PanGestureRecognizer(p => DetectHandler(p)));
 
             var builder = new AdLoader.Builder(Renderer.Context, View.UnitId);
             builder.ForUnifiedNativeAd(new UnifiedNativeAdListener(this));
@@ -37,9 +49,10 @@ namespace Zebble
 
         void CreateAdView(UnifiedNativeAd ad)
         {
+            NativeAd = ad;
             NativeView = new UnifiedNativeAdView(Renderer.Context)
             {
-                LayoutParameters = new Android.Views.ViewGroup.LayoutParams(Android.Views.ViewGroup.LayoutParams.MatchParent, Android.Views.ViewGroup.LayoutParams.MatchParent)
+                LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
             };
 
             AddView(NativeView);
@@ -53,7 +66,12 @@ namespace Zebble
             else View.BodyView?.Ignored();
 
             if (View.CallToActionView != null && ad.CallToAction.HasValue())
+            {
+                ActionButton = new Android.Widget.Button(Renderer.Context) { Visibility = ViewStates.Invisible, Text = ad.CallToAction };
+                NativeView.AddView(ActionButton);
+
                 View.CallToActionView.Text = ad.CallToAction;
+            }
             else View.CallToActionView?.Ignored();
 
             if (View.IconView != null && ad.Icon != null)
@@ -75,7 +93,7 @@ namespace Zebble
             NativeView.MediaView = View.MediaView?.Native() as AdmobAndroidMediaView;
             NativeView.HeadlineView = View.HeadLineView?.Native();
             NativeView.BodyView = View.BodyView?.Native();
-            NativeView.CallToActionView = View.CallToActionView?.Native();
+            NativeView.CallToActionView = ActionButton;
             NativeView.IconView = View.IconView?.Native();
             NativeView.PriceView = View.PriceView?.Native();
             NativeView.StoreView = View.StoreView?.Native();
@@ -99,6 +117,72 @@ namespace Zebble
                 return stream.ReadAllBytes();
             }
         }
+
+        void HandleTouched(View handler, Point point)
+        {
+            point = point.RelativeTo(handler);
+            var args = new Zebble.TouchEventArgs(handler, point, 1);
+            handler.RaiseTouched(args);
+        }
+
+        void HandleTapped(View handler, Point point, int touches)
+        {
+            Device.Keyboard.Hide();
+
+            if (handler is Button btn && btn.Text == NativeAd.CallToAction)
+            {
+                ActionButton.PerformClick();
+            }
+
+            point = point.RelativeTo(handler);
+            handler.RaiseTapped(new Zebble.TouchEventArgs(handler, point, touches));
+        }
+
+        View DetectHandler(Point point, Zebble.View view = null)
+        {
+            point.X = Scaler.ToZebble(point.X);
+            point.X += View.CalculateAbsoluteX();
+
+            point.Y = Scaler.ToZebble(point.Y);
+            point.Y += View.CalculateAbsoluteY();
+
+            return new HitTester(point).FindHandler();
+        }
+
+        bool OnTouch(MotionEvent ev)
+        {
+            var point = ev.GetPoint();
+            Zebble.View handler = null;
+
+            if (point.X == LatestPoint.X && point.Y == LatestPoint.Y && ev.EventTime > ev.DownTime && ev.EventTime - ev.DownTime < 200)
+                LatestHandler.TryGetTarget(out handler);
+            else LatestPoint = point;
+
+            if (handler is null) handler = DetectHandler(point);
+            if (handler is null) return true;
+
+            LatestHandler.SetTarget(handler);
+
+            if (ev.Action == MotionEventActions.Down)
+                HandleTouched(handler, point);
+
+            foreach (var r in Recognizers)
+                r.ProcessMotionEvent(handler, ev);
+
+            return true;
+        }
+
+        public override bool DispatchTouchEvent(MotionEvent e)
+        {
+            Parent.RequestDisallowInterceptTouchEvent(true);
+            return base.DispatchTouchEvent(e);
+        }
+
+        public override bool OnInterceptTouchEvent(MotionEvent ev) => OnTouch(ev);
+
+        public override bool OnTouchEvent(MotionEvent ev) => OnTouch(ev);
+
+        public void AddGestureRecognizer(BaseGestureRecognizer gesture) => Recognizers.Add(gesture.Set(x => x.NativeView = this));
 
         class VideoControllerCallback : VideoController.VideoLifecycleCallbacks
         {
