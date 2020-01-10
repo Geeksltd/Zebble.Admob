@@ -16,13 +16,12 @@
     <None Include="$(MSBuildThisFileDirectory)NuGet\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)AdmobNativeAdInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdAgent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Admob.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobListenerErrors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobMediaView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdmobNativeVideoView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeAdView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobInterstitialView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdmobBannerView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobRewardedView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobView.cs" />

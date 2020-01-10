@@ -1,6 +1,6 @@
 ﻿using Android.Gms.Ads;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     class AdmobAndroidListener<TView> : AdListener where TView : AdmobView
     {

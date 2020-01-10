@@ -1,4 +1,4 @@
-﻿namespace Zebble
+﻿namespace Zebble.AdMob
 {
     public partial class Admob
     {

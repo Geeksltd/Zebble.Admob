@@ -1,6 +1,6 @@
 ﻿using Android.Gms.Ads.Rewarded;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     class AdmobAndroidRewardedVideoView
     {

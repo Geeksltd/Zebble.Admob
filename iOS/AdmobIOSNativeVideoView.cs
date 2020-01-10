@@ -5,12 +5,12 @@ using UIKit;
 
 namespace Zebble
 {
-    class AdmobIOSNativeVideoView : UIView, IZebbleAdNativeView<AdmobNativeVideoView>
+    class AdmobIOSNativeVideoView : UIView, IZebbleAdNativeView<NativeAdView>
     {
-        public AdmobNativeVideoView View { get; set; }
+        public NativeAdView View { get; set; }
         UnifiedNativeAdView NativeView;
 
-        public AdmobIOSNativeVideoView(AdmobNativeVideoView view)
+        public AdmobIOSNativeVideoView(NativeAdView view)
         {
             View = view;
 
@@ -82,7 +82,7 @@ namespace Zebble
             }
         }
 
-        class IOSNativeAdListener : AdmobIOSListener<AdmobNativeVideoView>, IUnifiedNativeAdLoaderDelegate, IUnifiedNativeAdDelegate
+        class IOSNativeAdListener : AdmobIOSListener<NativeAdView>, IUnifiedNativeAdLoaderDelegate, IUnifiedNativeAdDelegate
         {
             AdmobIOSNativeVideoView NativeView;
 

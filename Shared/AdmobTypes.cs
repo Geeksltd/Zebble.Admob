@@ -1,10 +1,10 @@
-﻿namespace Zebble
+﻿namespace Zebble.AdMob
 {
     public enum AdmobTypes
     {
-        Banner, 
-        Interstitial, 
-        Rewarded, 
+        Banner,
+        Interstitial,
+        Rewarded,
         Native,
         Media
     }

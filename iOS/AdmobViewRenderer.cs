@@ -16,7 +16,7 @@ namespace Zebble
                     Result = new AdmobIOSBannerView((AdmobBannerView)renderer.View);
                     return Task.FromResult(Result);
                 case AdmobTypes.Native:
-                    Result = new AdmobIOSNativeVideoView((AdmobNativeVideoView)renderer.View);
+                    Result = new AdmobIOSNativeVideoView((NativeAdView)renderer.View);
                     return Task.FromResult(Result);
                 case AdmobTypes.Media:
                     Result = new AdmobIOSMediaView((AdmobMediaView)renderer.View);

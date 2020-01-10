@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     public class AdmobInterstitialView
     {

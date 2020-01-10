@@ -1,7 +1,7 @@
 ﻿using Android.Gms.Ads.Formats;
 using Android.Views;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     class AdmobAndroidMediaView : MediaView
     {
