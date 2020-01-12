@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Concurrent;
-using System.IO;
-using Android.Gms.Ads;
+﻿using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
-using Android.Graphics;
-using Android.Graphics.Drawables;
-using Android.Widget;
-using Zebble.AndroidOS;
-using Android.Views;
+using System;
 
 namespace Zebble.AdMob
 {
@@ -32,12 +20,16 @@ namespace Zebble.AdMob
                     .Build();
 
             builder.WithNativeAdOptions(adOptions);
-            // builder.WithAdListener(new AdListener<AdmobNativeVideoView>(this));
+            //builder.WithAdListener(new AdListener<AdmobNativeVideoView>(this));
+
             Loader = builder.Build();
         }
 
         void RequestNativeAd(AdParameters request)
         {
+            if (Loader == null)
+                Initialize();
+
             var builder = new AdRequest.Builder();
             if (request.Keywords.HasValue()) builder.AddKeyword(request.Keywords);
             Loader.LoadAd(builder.Build());
@@ -54,14 +46,7 @@ namespace Zebble.AdMob
 
         //class AdListener<TView> : AdListener where TView : AdmobView
         //{
-        //    IZebbleAdNativeView<TView> AdView;
-
-        //    public AdmobAndroidListener(IZebbleAdNativeView<TView> adView)
-        //    {
-        //        AdView = adView;
-
-
-        //    }
+        //    public override void OnAdLeftApplication() => base.OnAdLeftApplication();
 
         //    public override void OnAdClicked() => AdView.View.OnAdTapped.Raise();
 
@@ -71,6 +56,8 @@ namespace Zebble.AdMob
 
         //    public override void OnAdFailedToLoad(int p0)
         //    {
+        //        this.
+
         //        string error;
         //        AdmobAndroidListener.OnAdError(p0, out error);
         //        AdView.View.OnAdFailed.Raise(error);

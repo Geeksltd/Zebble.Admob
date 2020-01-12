@@ -17,7 +17,6 @@ namespace Zebble.AdMob
         UnifiedNativeAdView NativeView;
         NativeAdInfo CurrentAd;
         AdAgent Agent;
-        Android.Widget.Button ActionButton;
         VideoControllerCallback VideoCallBack;
 
         ConcurrentList<BaseGestureRecognizer> Recognizers = new ConcurrentList<BaseGestureRecognizer>();
