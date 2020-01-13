@@ -20,7 +20,6 @@ namespace Zebble.AdMob
                     .Build();
 
             builder.WithNativeAdOptions(adOptions);
-            //builder.WithAdListener(new AdListener<AdmobNativeVideoView>(this));
 
             Loader = builder.Build();
         }
@@ -43,27 +42,5 @@ namespace Zebble.AdMob
 
             public void OnUnifiedNativeAdLoaded(UnifiedNativeAd ad) => Agent.OnNativeAdReady(new NativeAdInfo(ad));
         }
-
-        //class AdListener<TView> : AdListener where TView : AdmobView
-        //{
-        //    public override void OnAdLeftApplication() => base.OnAdLeftApplication();
-
-        //    public override void OnAdClicked() => AdView.View.OnAdTapped.Raise();
-
-        //    public override void OnAdClosed() => AdView.View.OnAdClosed.Raise();
-
-        //    public override void OnAdLoaded() => AdView.View.OnAdLoaded.Raise();
-
-        //    public override void OnAdFailedToLoad(int p0)
-        //    {
-        //        this.
-
-        //        string error;
-        //        AdmobAndroidListener.OnAdError(p0, out error);
-        //        AdView.View.OnAdFailed.Raise(error);
-        //    }
-
-        //    public override void OnAdOpened() => AdView.View.OnAdOpened.Raise();
-        //}
     }
 }

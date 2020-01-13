@@ -2,7 +2,7 @@
 
 namespace Zebble.AdMob
 {
-    public class AdmobInterstitialView
+    public partial class InterstitialAd
     {
         internal readonly AsyncEvent OnShow = new AsyncEvent();
 
@@ -15,7 +15,5 @@ namespace Zebble.AdMob
         public string UnitId { get; set; }
 
         public AdmobTypes AdType => AdmobTypes.Interstitial;
-
-        public Task Show() => OnShow.Raise();
     }
 }

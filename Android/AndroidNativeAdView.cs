@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.IO;
 using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
-using Android.Graphics;
-using Android.Graphics.Drawables;
 using Android.Widget;
 using Zebble.AndroidOS;
 using Android.Views;

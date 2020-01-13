@@ -2,7 +2,7 @@
 
 namespace Zebble.AdMob
 {
-    public class AdmobRewardedView
+    public partial class RewardedVideoAd
     {
         internal readonly AsyncEvent OnShow = new AsyncEvent();
 
@@ -16,8 +16,6 @@ namespace Zebble.AdMob
         public string UnitId { get; set; }
 
         public AdmobTypes AdType => AdmobTypes.Rewarded;
-
-        public Task Show() => OnShow.Raise();
     }
 
     public class RewardItemArgs

@@ -21,8 +21,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)AdmobListenerErrors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobMediaView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NativeAdView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdmobInterstitialView.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AdmobRewardedView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InterstitialAd.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RewardedVideoAd.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobTypes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdmobView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IZebbleAdView.cs" />
