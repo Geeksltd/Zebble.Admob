@@ -1,6 +1,6 @@
 ﻿using Google.MobileAds;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     public partial class Admob
     {

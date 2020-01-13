@@ -1,22 +1,11 @@
-﻿using Foundation;
-using Google.MobileAds;
-using ObjCRuntime;
-using System;
+﻿using Google.MobileAds;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
-    abstract class AdmobIOSListener<TView> : NSObject, INativeObject, IDisposable where TView : AdmobView
+    static class AdmobIOSListener
     {
-        IZebbleAdNativeView<TView> AdView;
-
-        public AdmobIOSListener(IZebbleAdNativeView<TView> adView)
+        public static void OnError(RequestError error, out string errorMessage)
         {
-            AdView = adView;
-        }
-
-        internal void OnError(RequestError error)
-        {
-            var errorMessage = "";
             switch (error.Code)
             {
                 case (int)AdmobListenerErrors.InternalError:
@@ -35,8 +24,6 @@ namespace Zebble
                     errorMessage = null;
                     break;
             }
-
-            AdView.View.OnAdFailed.Raise(errorMessage);
         }
     }
 }

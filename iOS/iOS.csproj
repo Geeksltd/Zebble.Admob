@@ -66,12 +66,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdAgent.cs" />
     <Compile Include="Admob.cs" />
-    <Compile Include="AdmobIOSBannerView.cs" />
     <Compile Include="AdmobIOSMediaView.cs" />
     <Compile Include="AdmobIOSListener.cs" />
-    <Compile Include="AdmobIOSNativeVideoView.cs" />
+    <Compile Include="IOSNativeAdView.cs" />
     <Compile Include="AdmobViewRenderer.cs" />
+    <Compile Include="NativeAdInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Zebble-LicenseAgreement.txt" />

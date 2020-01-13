@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using UIKit;
 
-namespace Zebble
+namespace Zebble.AdMob
 {
     class AdmobViewRenderer : INativeRenderer
     {
@@ -9,20 +10,11 @@ namespace Zebble
 
         public Task<UIView> Render(Renderer renderer)
         {
-            var view = (IZebbleAdView)renderer.View;
-            switch (view.AdType)
-            {
-                case AdmobTypes.Banner:
-                    Result = new AdmobIOSBannerView((AdmobBannerView)renderer.View);
-                    return Task.FromResult(Result);
-                case AdmobTypes.Native:
-                    Result = new AdmobIOSNativeVideoView((NativeAdView)renderer.View);
-                    return Task.FromResult(Result);
-                case AdmobTypes.Media:
-                    Result = new AdmobIOSMediaView((AdmobMediaView)renderer.View);
-                    return Task.FromResult(Result);
-                default: return null;
-            }
+            if (renderer.View is NativeAdView native) Result = new IOSNativeAdView(native);
+            else if (renderer.View is AdmobMediaView media) Result = new AdmobIOSMediaView(media);
+            else throw new NotSupportedException();
+
+            return Task.FromResult(Result);
         }
 
         public void Dispose()
