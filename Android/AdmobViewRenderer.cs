@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using System;
+using Android.Runtime;
 
 namespace Zebble.AdMob
 {
+    [Preserve]
     class AdmobViewRenderer : INativeRenderer
     {
         Android.Views.View Result;
