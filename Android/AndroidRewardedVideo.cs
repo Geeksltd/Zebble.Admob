@@ -22,9 +22,18 @@ namespace Zebble.AdMob
             });
         }
 
-        public Task ShowVideo() => Thread.UI.Run(() => NativeView.Show(UIRuntime.CurrentActivity, new AdmobRewardedAdCallback(this)));
+        public Task ShowVideo() => Thread.UI.Run(() =>
+        {
+            if (!NativeView.IsLoaded)
+            {
+                OnAdFailed.Raise("The RewardedVideo has not loaded yet!");
+                return;
+            }
 
-        internal class AdmobRewardedAdLoadCallback : RewardedAdLoadCallback
+            NativeView.Show(UIRuntime.CurrentActivity, new AdmobRewardedAdCallback(this));
+        });
+
+        class AdmobRewardedAdLoadCallback : RewardedAdLoadCallback
         {
             RewardedVideoAd Ad;
 
@@ -43,7 +52,7 @@ namespace Zebble.AdMob
             }
         }
 
-        internal class AdmobRewardedAdCallback : RewardedAdCallback
+        class AdmobRewardedAdCallback : RewardedAdCallback
         {
             RewardedVideoAd Ad;
 
