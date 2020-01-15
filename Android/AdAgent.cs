@@ -31,6 +31,7 @@ namespace Zebble.AdMob
 
             var builder = new AdRequest.Builder();
             if (request.Keywords.HasValue()) builder.AddKeyword(request.Keywords);
+
             Loader.LoadAd(builder.Build());
         }
 

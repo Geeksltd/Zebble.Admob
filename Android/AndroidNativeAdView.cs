@@ -5,9 +5,12 @@ using Android.Gms.Ads.Formats;
 using Android.Widget;
 using Zebble.AndroidOS;
 using Android.Views;
+using System.Threading.Tasks;
+using Android.Runtime;
 
 namespace Zebble.AdMob
 {
+    [Preserve]
     class AndroidNativeAdView : FrameLayout, IZebbleAdNativeView<NativeAdView>
     {
         public NativeAdView View { get; set; }
@@ -19,6 +22,9 @@ namespace Zebble.AdMob
         ConcurrentList<BaseGestureRecognizer> Recognizers = new ConcurrentList<BaseGestureRecognizer>();
         WeakReference<Zebble.View> LatestHandler = new WeakReference<Zebble.View>(null);
         Point LatestPoint;
+
+        [Preserve]
+        public AndroidNativeAdView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
         public AndroidNativeAdView(NativeAdView view) : base(Renderer.Context)
         {
@@ -35,10 +41,28 @@ namespace Zebble.AdMob
             Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
 
             view.RotateRequested.Handle(LoadNext);
-            LoadNext();
+            LoadNext().RunInParallel();
         }
 
-        void LoadNext() => Agent.GetNativeAd(View.Parameters).ContinueWith(ad => CreateAdView(ad.GetAlreadyCompletedResult()));
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing) View = null;
+            base.Dispose(disposing);
+        }
+
+        async Task LoadNext()
+        {
+            var ad = await Agent.GetNativeAd(View.Parameters);
+
+            // TODO: Configure it here
+            // See https://developers.google.com/android/reference/com/google/android/gms/ads/formats/UnifiedNativeAd
+
+            ad.Native.EnableCustomClickGesture();
+
+
+
+            CreateAdView(ad);
+        }
 
         void CreateAdView(NativeAdInfo ad)
         {
