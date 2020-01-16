@@ -22,6 +22,7 @@ namespace Zebble.AdMob
         ConcurrentList<BaseGestureRecognizer> Recognizers = new ConcurrentList<BaseGestureRecognizer>();
         WeakReference<Zebble.View> LatestHandler = new WeakReference<Zebble.View>(null);
         Point LatestPoint;
+        bool IsHandlerMine;
 
         [Preserve]
         public AndroidNativeAdView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
@@ -53,14 +54,6 @@ namespace Zebble.AdMob
         async Task LoadNext()
         {
             var ad = await Agent.GetNativeAd(View.Parameters);
-
-            // TODO: Configure it here
-            // See https://developers.google.com/android/reference/com/google/android/gms/ads/formats/UnifiedNativeAd
-
-            ad.Native.EnableCustomClickGesture();
-
-
-
             CreateAdView(ad);
         }
 
@@ -84,12 +77,6 @@ namespace Zebble.AdMob
 
             if (vc.HasVideoContent && VideoCallBack == null)
                 vc.SetVideoLifecycleCallbacks(VideoCallBack = new VideoControllerCallback(View));
-        }
-
-        void HandleTouched(View handler, Point point)
-        {
-            point = point.RelativeTo(handler);
-            handler.RaiseTouched(new Zebble.TouchEventArgs(handler, point, 1));
         }
 
         void HandleTapped(View handler, Point point, int touches)
@@ -127,24 +114,30 @@ namespace Zebble.AdMob
 
             LatestHandler.SetTarget(handler);
 
-            if (ev.Action == MotionEventActions.Down)
-                HandleTouched(handler, point);
-
-            foreach (var r in Recognizers)
-                r.ProcessMotionEvent(handler, ev);
+            if (IsHandlerInAdView(handler))
+                foreach (var r in Recognizers)
+                    r.ProcessMotionEvent(handler, ev);
 
             return true;
         }
 
-        public override bool DispatchTouchEvent(MotionEvent e)
+        bool IsHandlerInAdView(View handler)
         {
-            Parent.RequestDisallowInterceptTouchEvent(true);
-            return base.DispatchTouchEvent(e);
+            if (View.AllDescendents().ContainsAny(new View[] { handler })) return IsHandlerMine = true;
+            return IsHandlerMine = false;
         }
 
-        public override bool OnInterceptTouchEvent(MotionEvent ev) => OnTouch(ev);
+        public override bool OnInterceptTouchEvent(MotionEvent ev)
+        {
+            base.OnInterceptTouchEvent(ev);
+            return OnTouch(ev);
+        }
 
-        public override bool OnTouchEvent(MotionEvent ev) => OnTouch(ev);
+        public override bool OnTouchEvent(MotionEvent ev)
+        {
+            if (IsHandlerMine) return OnTouch(ev);
+            else return base.OnTouchEvent(ev);
+        }
 
         class VideoControllerCallback : VideoController.VideoLifecycleCallbacks
         {
