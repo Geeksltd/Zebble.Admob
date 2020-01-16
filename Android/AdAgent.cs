@@ -30,6 +30,10 @@ namespace Zebble.AdMob
                 Initialize();
 
             var builder = new AdRequest.Builder();
+
+            foreach (var id in Config.Get("Admob.Test.Device.Ids").OrEmpty().Split(',').Trim())
+                builder.AddTestDevice(id);
+
             if (request.Keywords.HasValue()) builder.AddKeyword(request.Keywords);
 
             Loader.LoadAd(builder.Build());
