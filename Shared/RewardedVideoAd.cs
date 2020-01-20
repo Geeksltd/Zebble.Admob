@@ -4,8 +4,6 @@ namespace Zebble.AdMob
 {
     public partial class RewardedVideoAd
     {
-        internal readonly AsyncEvent OnShow = new AsyncEvent();
-
         public readonly AsyncEvent OnAdClosed = new AsyncEvent();
         public readonly AsyncEvent OnAdLoaded = new AsyncEvent();
         public readonly AsyncEvent OnAdOpened = new AsyncEvent();

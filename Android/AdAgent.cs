@@ -31,7 +31,7 @@ namespace Zebble.AdMob
 
             var builder = new AdRequest.Builder();
 
-            foreach (var id in Config.Get("Admob.Test.Device.Ids").OrEmpty().Split(',').Trim())
+            foreach (var id in Config.Get("Admob.Android.Test.Device.Ids").OrEmpty().Split(',').Trim())
                 builder.AddTestDevice(id);
 
             if (request.Keywords.HasValue()) builder.AddKeyword(request.Keywords);

@@ -18,7 +18,7 @@ namespace Zebble.AdMob
             Price = ad.Price;
             Advertiser = ad.Advertiser;
             Body = ad.Body;
-            StarRating = (double?)(ad.StarRating ?? null);
+            StarRating = ad.StarRating?.DoubleValue ?? 0;
             Store = ad.Store;
             CallToAction = ad.CallToAction;
         }

@@ -25,5 +25,27 @@ namespace Zebble.AdMob
                     break;
             }
         }
+
+        public static void OnRewardedAdError(int arg, out string error)
+        {
+            switch (arg)
+            {
+                case (int)AdmobListenerRewardedError.InternalError:
+                    error = "Something happened internally; for instance, an invalid response was received from the ad server.";
+                    break;
+                case (int)AdmobListenerRewardedError.AdReused:
+                    error = "The rewarded ad has already been shown. RewardedAd objects are one-time use objects and can only be shown once. Instantiate and load a new RewardedAd to display a new ad.";
+                    break;
+                case (int)AdmobListenerRewardedError.NotReady:
+                    error = "The ad has not been successfully loaded.";
+                    break;
+                case (int)AdmobListenerRewardedError.AppNotForeground:
+                    error = "The ad can not be shown when the app is not in foreground.";
+                    break;
+                default:
+                    error = null;
+                    break;
+            }
+        }
     }
 }

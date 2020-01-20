@@ -72,6 +72,7 @@
     <Compile Include="AdmobIOSListener.cs" />
     <Compile Include="IOSNativeAdView.cs" />
     <Compile Include="AdmobViewRenderer.cs" />
+    <Compile Include="IOSRewardedVideo.cs" />
     <Compile Include="NativeAdInfo.cs" />
   </ItemGroup>
   <ItemGroup>

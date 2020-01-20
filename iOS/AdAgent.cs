@@ -26,6 +26,10 @@ namespace Zebble.AdMob
                 Initialize();
 
             var adRequest = Request.GetDefaultRequest();
+
+            foreach (var id in Config.Get("Admob.iOS.Test.Device.Ids").OrEmpty().Split(',').Trim())
+                adRequest.TestDevices.AddLine(id);
+            
             if (request.Keywords.HasValue()) adRequest.Keywords.AddLine(request.Keywords);
             Loader.LoadRequest(adRequest);
         }

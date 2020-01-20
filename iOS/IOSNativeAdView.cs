@@ -1,5 +1,6 @@
 ﻿using Google.MobileAds;
 using System;
+using System.Threading.Tasks;
 using UIKit;
 
 namespace Zebble.AdMob
@@ -18,11 +19,17 @@ namespace Zebble.AdMob
             NativeView = new UnifiedNativeAdView { Frame = View.GetFrame() };
             Add(NativeView);
 
+            Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+
             view.RotateRequested.Handle(LoadNext);
-            LoadNext();
+            LoadNext().RunInParallel();
         }
 
-        void LoadNext() => Agent.GetNativeAd(View.Parameters).ContinueWith(ad => CreateAdView(ad.GetAlreadyCompletedResult()));
+        async Task LoadNext()
+        {
+            var ad = await Agent.GetNativeAd(View.Parameters);
+            CreateAdView(ad);
+        }
 
         void CreateAdView(NativeAdInfo ad)
         {
