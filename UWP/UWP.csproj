@@ -110,6 +110,9 @@
     <DocumentationFile>..\lib\bin\x64\Release\Zebble.Admob.UWP.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Advertising.XAML">
+      <Version>10.1811.22001</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.0.6</Version>
     </PackageReference>
@@ -121,13 +124,23 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <SDKReference Include="Microsoft.Advertising.Xaml, Version=10.0">
+      <Name>Microsoft Advertising SDK for XAML</Name>
+    </SDKReference>
+    <SDKReference Include="Microsoft.VCLibs, Version=14.0">
+      <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
+    </SDKReference>
     <SDKReference Include="WindowsMobile, Version=10.0.17763.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdAgent.cs" />
+    <Compile Include="Admob.cs" />
+    <Compile Include="AdmobUWPMediaView.cs" />
     <Compile Include="AdmobViewRenderer.cs" />
+    <Compile Include="NativeAdInfo.cs" />
+    <Compile Include="UWPNativeAdView.cs" />
   </ItemGroup>
   <Import Project="..\Shared\Shared.projitems" Label="Shared" Condition="Exists('..\Shared\Shared.projitems')" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
