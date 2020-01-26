@@ -13,14 +13,14 @@ namespace Zebble.AdMob
         public NativeAdInfo(UnifiedNativeAd ad)
         {
             Native = ad;
-            Headline = ad.Headline;
+            Headline = ad.Headline.OrEmpty();
             Price = ad.Price;
-            Advertiser = ad.Advertiser;
-            Body = ad.Body;
+            Advertiser = ad.Advertiser.OrEmpty();
+            Body = ad.Body.OrEmpty();
             StarRating = ad.StarRating?.DoubleValue();
-            Store = ad.Store;
+            Store = ad.Store.OrEmpty();
             Icon = ToByteArray(ad.Icon?.Drawable);
-            CallToAction = ad.CallToAction;
+            CallToAction = ad.CallToAction.OrEmpty();
         }
 
         static byte[] ToByteArray(Drawable drawable)

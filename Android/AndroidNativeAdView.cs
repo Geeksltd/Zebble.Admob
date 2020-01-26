@@ -73,31 +73,46 @@ namespace Zebble.AdMob
             CurrentAd = ad;
             View.Ad.Value = ad;
 
-            NativeView.MediaView = View.MediaView?.Native() as AdmobAndroidMediaView;
-            NativeView.HeadlineView = View.HeadLineView?.Native();
-            NativeView.BodyView = View.BodyView?.Native();
-            NativeView.CallToActionView = View.CallToActionView?.Native();
-            NativeView.IconView = View.IconView?.Native();
-            NativeView.PriceView = View.PriceView?.Native();
-            NativeView.StoreView = View.StoreView?.Native();
-            NativeView.AdvertiserView = View.AdvertiserView?.Native();
+            if (ad is FailedNativeAdInfo)
+            {
+                View.HeadLineView.Text = ad.Headline;
+                View.BodyView.Text = ad.Body;
+                View.CallToActionView.Text = ad.CallToAction;
+            }
+            else
+            {
+                NativeView.MediaView = View.MediaView?.Native() as AdmobAndroidMediaView;
 
-            NativeView.SetNativeAd(ad.Native);
+                NativeView.HeadlineView = View.HeadLineView?.Native();
+                NativeView.BodyView = View.BodyView?.Native();
+                NativeView.CallToActionView = View.CallToActionView?.Native();
+                NativeView.IconView = View.IconView?.Native();
+                NativeView.PriceView = View.PriceView?.Native();
+                NativeView.StoreView = View.StoreView?.Native();
+                NativeView.AdvertiserView = View.AdvertiserView?.Native();
+                NativeView.SetNativeAd(ad.Native);
 
-            var vc = ad.Native.VideoController;
+                var vc = ad.Native.VideoController;
 
-            if (vc.HasVideoContent && VideoCallBack == null)
-                vc.SetVideoLifecycleCallbacks(VideoCallBack = new VideoControllerCallback(View));
+                if (vc.HasVideoContent && VideoCallBack == null)
+                    vc.SetVideoLifecycleCallbacks(VideoCallBack = new VideoControllerCallback(View));
+            }
         }
 
         void HandleTapped(View handler, Point point, int touches)
         {
             Device.Keyboard.Hide();
 
-            View.CallToActionView?.Native()?.PerformClick();
-
-            point = point.RelativeTo(handler);
-            handler.RaiseTapped(new Zebble.TouchEventArgs(handler, point, touches));
+            if (CurrentAd is FailedNativeAdInfo ad)
+            {
+                Device.OS.OpenBrowser(ad.TargetUrl);
+            }
+            else
+            {
+                View.CallToActionView?.Native()?.PerformClick();
+                point = point.RelativeTo(handler);
+                handler.RaiseTapped(new Zebble.TouchEventArgs(handler, point, touches));
+            }
         }
 
         View DetectHandler(Point point)

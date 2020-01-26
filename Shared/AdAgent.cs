@@ -12,7 +12,7 @@ namespace Zebble.AdMob
 
         TaskCompletionSource<NativeAdInfo> NextNativeAd;
 
-        public void OnAdFailedToLoad(string reason) => NextNativeAd?.TrySetResult(new FailedNativeAdInfo(reason));
+        public void OnAdFailedToLoad(string reason) => NextNativeAd?.TrySetResult(FailedNativeAdInfo.Create(reason));
 
         public void OnNativeAdReady(NativeAdInfo ad) => NextNativeAd?.TrySetResult(ad);
 
@@ -31,24 +31,35 @@ namespace Zebble.AdMob
 
     public class FailedNativeAdInfo : NativeAdInfo
     {
-        public FailedNativeAdInfo(string reason)
+        static Func<string, FailedNativeAdInfo> CustomProvider;
+        public virtual string ImageUrl { get; set; }
+        public virtual string TargetUrl { get; set; }
+
+        public static void OnRequested(Func<string, FailedNativeAdInfo> provider) => CustomProvider = provider;
+
+        internal static FailedNativeAdInfo Create(string reason)
         {
-            Headline = "Ad loading failed";
-            Body = reason;
-            CallToAction = "Try again later";
+            return CustomProvider?.Invoke(reason) ?? new
+
+            FailedNativeAdInfo
+            {
+                Headline = "Ad loading failed",
+                Body = reason,
+                CallToAction = "Try again later",
+            };
         }
     }
 
     public partial class NativeAdInfo
     {
-        public string Headline { get; internal set; } = "...";
-        public string Price { get; internal set; }
-        public string Advertiser { get; internal set; }
-        public string Body { get; internal set; }
-        public double? StarRating { get; internal set; }
-        public string Store { get; internal set; }
-        public string CallToAction { get; internal set; } = "Open";
-        public byte[] Icon { get; internal set; }
+        public virtual string Headline { get; set; } = "...";
+        public virtual string Price { get; set; }
+        public virtual string Advertiser { get; set; }
+        public virtual string Body { get; set; }
+        public virtual double? StarRating { get; set; }
+        public virtual string Store { get; set; }
+        public virtual string CallToAction { get; set; } = "Open";
+        public virtual byte[] Icon { get; set; }
 
         public bool HasData
         {
