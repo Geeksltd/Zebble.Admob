@@ -283,6 +283,6 @@
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.103\lib\MonoAndroid10</PostBuildEvent>
+    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.105\lib\MonoAndroid10</PostBuildEvent>
   </PropertyGroup>
 </Project>

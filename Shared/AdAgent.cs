@@ -5,8 +5,6 @@ namespace Zebble.AdMob
 {
     public partial class AdAgent
     {
-        public readonly AsyncEvent<NativeAdInfo> OnAdReady = new AsyncEvent<NativeAdInfo>();
-
         public bool IsVideoMuted { get; set; }
         public string UnitId { get; set; }
 
@@ -14,12 +12,9 @@ namespace Zebble.AdMob
 
         TaskCompletionSource<NativeAdInfo> NextNativeAd;
 
-        public void OnNativeAdReady(NativeAdInfo ad)
-        {
-            if (NextNativeAd == null) throw new Exception("No body is waiting for the ad.");
-            NextNativeAd.TrySetResult(ad);
-            OnAdReady.Raise(ad);
-        }
+        public void OnAdFailedToLoad(string reason) => NextNativeAd?.TrySetResult(new FailedNativeAdInfo(reason));
+
+        public void OnNativeAdReady(NativeAdInfo ad) => NextNativeAd?.TrySetResult(ad);
 
         public Task<NativeAdInfo> GetNativeAd(AdParameters request)
         {
@@ -32,6 +27,16 @@ namespace Zebble.AdMob
     public class AdParameters
     {
         public string Keywords;
+    }
+
+    public class FailedNativeAdInfo : NativeAdInfo
+    {
+        public FailedNativeAdInfo(string reason)
+        {
+            Headline = "Ad loading failed";
+            Body = reason;
+            CallToAction = "Try again later";
+        }
     }
 
     public partial class NativeAdInfo

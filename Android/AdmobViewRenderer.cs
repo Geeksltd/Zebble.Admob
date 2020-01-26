@@ -5,7 +5,7 @@ using Android.Runtime;
 namespace Zebble.AdMob
 {
     [Preserve]
-    class AdmobViewRenderer : INativeRenderer
+    public class AdmobViewRenderer : INativeRenderer
     {
         Android.Views.View Result;
 

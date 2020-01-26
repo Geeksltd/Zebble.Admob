@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
@@ -19,7 +20,8 @@ namespace Zebble.AdMob
         AdAgent Agent;
         VideoControllerCallback VideoCallBack;
 
-        ConcurrentList<BaseGestureRecognizer> Recognizers = new ConcurrentList<BaseGestureRecognizer>();
+        PanGestureRecognizer PanRecognizer;
+        TapGestureRecognizer TapRecognizer;
         WeakReference<Zebble.View> LatestHandler = new WeakReference<Zebble.View>(null);
         Point LatestPoint;
         bool IsHandlerMine;
@@ -31,8 +33,17 @@ namespace Zebble.AdMob
         {
             View = view;
 
-            Recognizers.Add(new TapGestureRecognizer { OnGestureRecognized = HandleTapped, NativeView = this });
-            Recognizers.Add(new PanGestureRecognizer(p => DetectHandler(p)) { NativeView = this });
+            TapRecognizer = new TapGestureRecognizer { OnGestureRecognized = HandleTapped, NativeView = this };
+            PanRecognizer = new PanGestureRecognizer(p => DetectHandler(p)) { NativeView = this };
+
+            view.Panning.Handle(args =>
+            {
+                CurrentAd?.Native?.CancelUnconfirmedClick();
+
+                var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
+                if (handlerParent != null)
+                    handlerParent.RaisePanning(args);
+            });
 
             AddView(NativeView = new UnifiedNativeAdView(Renderer.Context)
             {
@@ -115,8 +126,10 @@ namespace Zebble.AdMob
             LatestHandler.SetTarget(handler);
 
             if (IsHandlerInAdView(handler))
-                foreach (var r in Recognizers)
-                    r.ProcessMotionEvent(handler, ev);
+            {
+                PanRecognizer.ProcessMotionEvent(handler, ev);
+                TapRecognizer.ProcessMotionEvent(handler, ev);
+            }
 
             return true;
         }
