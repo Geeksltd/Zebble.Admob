@@ -1,6 +1,7 @@
 ﻿using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
 using System;
+using System.Collections.Generic;
 
 namespace Zebble.AdMob
 {
@@ -14,6 +15,9 @@ namespace Zebble.AdMob
     partial class AdAgent
     {
         AdLoader Loader;
+
+        public IList<NativeAdInfo> Ads { get; set; }
+        public DateTime LastUpdate { get; set; }
 
         public void Initialize()
         {
@@ -45,7 +49,7 @@ namespace Zebble.AdMob
 
             if (request.Keywords.HasValue()) builder.AddKeyword(request.Keywords);
 
-            Loader.LoadAd(builder.Build());
+            Loader.LoadAds(builder.Build(), 5);
         }
 
         class UnifiedNativeAdListener : Java.Lang.Object, UnifiedNativeAd.IOnUnifiedNativeAdLoadedListener
@@ -54,7 +58,19 @@ namespace Zebble.AdMob
 
             public UnifiedNativeAdListener(AdAgent agent) => Agent = agent;
 
-            public void OnUnifiedNativeAdLoaded(UnifiedNativeAd ad) => Agent.OnNativeAdReady(new NativeAdInfo(ad));
+            public void OnUnifiedNativeAdLoaded(UnifiedNativeAd ad)
+            {
+                var currentAd = new NativeAdInfo(ad);
+                if (Agent.Ads == null)
+                {
+                    Agent.OnNativeAdReady(currentAd);
+                    Agent.Ads = new List<NativeAdInfo>();
+                }
+                else Agent.Ads.Add(currentAd);
+                
+                Agent.LastUpdate = DateTime.Now;
+            }
         }
+
     }
 }

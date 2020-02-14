@@ -53,7 +53,7 @@ namespace Zebble.AdMob
             Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
 
             view.RotateRequested.Handle(LoadNext);
-            LoadNext().RunInParallel();
+            LoadAds().RunInParallel();
         }
 
         protected override void Dispose(bool disposing)
@@ -62,13 +62,33 @@ namespace Zebble.AdMob
             base.Dispose(disposing);
         }
 
-        async Task LoadNext()
+        async Task LoadAds()
         {
             var ad = await Agent.GetNativeAd(View.Parameters);
-            CreateAdView(ad);
+            await CreateAdView(ad);
         }
 
-        void CreateAdView(NativeAdInfo ad)
+        async Task LoadNext()
+        {
+            var ad = Agent.Ads.FirstOrDefault();
+            if (ad == null)
+            {
+                if (DateTime.Now.Subtract(Agent.LastUpdate).TotalSeconds > 60)
+                    LoadAds().RunInParallel();
+                else
+                {
+                    await Task.Delay(60000);
+                    LoadAds().RunInParallel();
+                }
+            }
+            else
+            {
+                await CreateAdView(ad);
+                Agent.Ads.RemoveAt(0);
+            }
+        }
+
+        async Task CreateAdView(NativeAdInfo ad)
         {
             CurrentAd = ad;
             View.Ad.Value = ad;
@@ -81,6 +101,8 @@ namespace Zebble.AdMob
             }
             else
             {
+                var adChoices = new AdChoicesView(Renderer.Context) { LayoutParameters = new ViewGroup.LayoutParams(25, 25) };
+
                 NativeView.MediaView = View.MediaView?.Native() as AdmobAndroidMediaView;
 
                 NativeView.HeadlineView = View.HeadLineView?.Native();
@@ -90,6 +112,8 @@ namespace Zebble.AdMob
                 NativeView.PriceView = View.PriceView?.Native();
                 NativeView.StoreView = View.StoreView?.Native();
                 NativeView.AdvertiserView = View.AdvertiserView?.Native();
+                NativeView.AdChoicesView = adChoices;
+
                 NativeView.SetNativeAd(ad.Native);
 
                 var vc = ad.Native.VideoController;
@@ -97,6 +121,8 @@ namespace Zebble.AdMob
                 if (vc.HasVideoContent && VideoCallBack == null)
                     vc.SetVideoLifecycleCallbacks(VideoCallBack = new VideoControllerCallback(View));
             }
+
+            await Task.CompletedTask;
         }
 
         void HandleTapped(View handler, Point point, int touches)
@@ -107,7 +133,7 @@ namespace Zebble.AdMob
             {
                 Device.OS.OpenBrowser(ad.TargetUrl);
             }
-            else
+            else if (handler is AdmobMediaView || handler.ToString() == View.CallToActionView.ToString())
             {
                 View.CallToActionView?.Native()?.PerformClick();
                 point = point.RelativeTo(handler);
