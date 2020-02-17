@@ -70,25 +70,33 @@ namespace Zebble.AdMob
 
         async Task LoadNext()
         {
-            var ad = Agent.Ads.FirstOrDefault();
+            var ad = Agent.Ads.FirstOrDefault(x => !x.IsShown);
             if (ad == null)
             {
-                if (DateTime.Now.Subtract(Agent.LastUpdate).TotalSeconds > 60)
+                var ts = DateTime.Now.Subtract(Agent.LastUpdate).TotalSeconds;
+                if (ts > Agent.WaitingToLoad.TotalSeconds)
                     LoadAds().RunInParallel();
                 else
                 {
-                    await Task.Delay(60000);
-                    LoadAds().RunInParallel();
+                    Agent.ResetAdsList();
+                    Task.Delay(Agent.WaitingToLoad).ContinueWith(t =>
+                    {
+                        if (t.IsCompleted)
+                        {
+                            Agent.Ads.Clear();
+                            LoadAds().RunInParallel();
+                        }
+                    }).RunInParallel();
                 }
             }
             else
             {
                 await CreateAdView(ad);
-                Agent.Ads.RemoveAt(0);
+                ad.IsShown = true;
             }
         }
 
-        async Task CreateAdView(NativeAdInfo ad)
+        Task CreateAdView(NativeAdInfo ad)
         {
             CurrentAd = ad;
             View.Ad.Value = ad;
@@ -122,7 +130,7 @@ namespace Zebble.AdMob
                     vc.SetVideoLifecycleCallbacks(VideoCallBack = new VideoControllerCallback(View));
             }
 
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         void HandleTapped(View handler, Point point, int touches)

@@ -1,5 +1,6 @@
 ﻿using Google.MobileAds;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using UIKit;
 
@@ -22,16 +23,44 @@ namespace Zebble.AdMob
             Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
 
             view.RotateRequested.Handle(LoadNext);
-            LoadNext().RunInParallel();
+            LoadAds().RunInParallel();
+        }
+
+        async Task LoadAds()
+        {
+            var ad = await Agent.GetNativeAd(View.Parameters);
+            await CreateAdView(ad);
         }
 
         async Task LoadNext()
         {
-            var ad = await Agent.GetNativeAd(View.Parameters);
-            CreateAdView(ad);
+            var ad = Agent.Ads.FirstOrDefault(x => !x.IsShown);
+            if (ad == null)
+            {
+                var ts = DateTime.Now.Subtract(Agent.LastUpdate).TotalSeconds;
+                if (ts > Agent.WaitingToLoad.TotalSeconds)
+                    LoadAds().RunInParallel();
+                else
+                {
+                    Agent.ResetAdsList();
+                    Task.Delay(Agent.WaitingToLoad).ContinueWith(t =>
+                    {
+                        if (t.IsCompleted)
+                        {
+                            Agent.Ads.Clear();
+                            LoadAds().RunInParallel();
+                        }
+                    }).RunInParallel();
+                }
+            }
+            else
+            {
+                await CreateAdView(ad);
+                ad.IsShown = true;
+            }
         }
 
-        void CreateAdView(NativeAdInfo ad)
+        Task CreateAdView(NativeAdInfo ad)
         {
             CurrentAd = ad;
             View.Ad.Value = ad;
@@ -48,6 +77,8 @@ namespace Zebble.AdMob
             NativeView.AdvertiserView = View.AdvertiserView?.Native();
 
             NativeView.NativeAd = ad.Native;
+
+            return Task.CompletedTask;
         }
     }
 }

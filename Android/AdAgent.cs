@@ -1,7 +1,6 @@
 ﻿using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
 using System;
-using System.Collections.Generic;
 
 namespace Zebble.AdMob
 {
@@ -15,9 +14,6 @@ namespace Zebble.AdMob
     partial class AdAgent
     {
         AdLoader Loader;
-
-        public IList<NativeAdInfo> Ads { get; set; }
-        public DateTime LastUpdate { get; set; }
 
         public void Initialize()
         {
@@ -61,14 +57,15 @@ namespace Zebble.AdMob
             public void OnUnifiedNativeAdLoaded(UnifiedNativeAd ad)
             {
                 var currentAd = new NativeAdInfo(ad);
-                if (Agent.Ads == null)
+                Agent.LastUpdate = DateTime.Now;
+
+                if (Agent.Ads.None())
                 {
                     Agent.OnNativeAdReady(currentAd);
-                    Agent.Ads = new List<NativeAdInfo>();
+                    currentAd.IsShown = true;
                 }
-                else Agent.Ads.Add(currentAd);
-                
-                Agent.LastUpdate = DateTime.Now;
+
+                Agent.Ads.Add(currentAd);
             }
         }
 

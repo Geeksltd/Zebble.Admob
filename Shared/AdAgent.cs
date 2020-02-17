@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Zebble.AdMob
@@ -8,7 +10,15 @@ namespace Zebble.AdMob
         public bool IsVideoMuted { get; set; }
         public string UnitId { get; set; }
 
-        public AdAgent(string unitId) => UnitId = unitId;
+        internal ConcurrentList<NativeAdInfo> Ads { get; set; }
+        internal DateTime LastUpdate { get; set; }
+        internal TimeSpan WaitingToLoad = 2.Minutes();
+
+        public AdAgent(string unitId)
+        {
+            UnitId = unitId;
+            Ads = new ConcurrentList<NativeAdInfo>();
+        }
 
         TaskCompletionSource<NativeAdInfo> NextNativeAd;
 
@@ -22,6 +32,8 @@ namespace Zebble.AdMob
             RequestNativeAd(request);
             return NextNativeAd.Task;
         }
+
+        internal void ResetAdsList() => Ads.Do(ad => ad.IsShown = false);
     }
 
     public class AdParameters
@@ -69,6 +81,8 @@ namespace Zebble.AdMob
                 return true;
             }
         }
+
+        internal bool IsShown { get; set; }
 
         public NativeAdInfo()
         {

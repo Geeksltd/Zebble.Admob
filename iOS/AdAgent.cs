@@ -13,8 +13,9 @@ namespace Zebble.AdMob
         {
             if (Loader != null) throw new InvalidOperationException("AdAgent.Initialize() should only be called once.");
 
+            var multipleAds = new MultipleAdsAdLoaderOptions { NumberOfAds = 5 };
             Loader = new AdLoader(UnitId, UIRuntime.NativeRootScreen as UIViewController,
-                new[] { AdLoaderAdType.UnifiedNative }, null)
+                new[] { AdLoaderAdType.UnifiedNative }, new AdLoaderOptions[] { multipleAds })
             {
                 Delegate = new IOSNativeAdListener(this)
             };
@@ -29,7 +30,7 @@ namespace Zebble.AdMob
 
             foreach (var id in Config.Get("Admob.iOS.Test.Device.Ids").OrEmpty().Split(',').Trim())
                 adRequest.TestDevices.AddLine(id);
-            
+
             if (request.Keywords.HasValue()) adRequest.Keywords.AddLine(request.Keywords);
             Loader.LoadRequest(adRequest);
         }
@@ -47,7 +48,19 @@ namespace Zebble.AdMob
                 Device.Log.Error(errorMessage);
             }
 
-            public void DidReceiveUnifiedNativeAd(AdLoader adLoader, UnifiedNativeAd nativeAd) => Agent.OnNativeAdReady(new NativeAdInfo(nativeAd));
+            public void DidReceiveUnifiedNativeAd(AdLoader adLoader, UnifiedNativeAd nativeAd)
+            {
+                var currentAd = new NativeAdInfo(nativeAd);
+                Agent.LastUpdate = DateTime.Now;
+
+                if (Agent.Ads.None())
+                {
+                    Agent.OnNativeAdReady(currentAd);
+                    currentAd.IsShown = true;
+                }
+
+                Agent.Ads.Add(currentAd);
+            }
         }
     }
 }
