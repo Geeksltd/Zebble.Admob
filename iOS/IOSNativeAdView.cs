@@ -28,8 +28,12 @@ namespace Zebble.AdMob
 
         async Task LoadAds()
         {
-            var ad = await Agent.GetNativeAd(View.Parameters);
-            await CreateAdView(ad);
+            if (Agent.Ads.None())
+            {
+                var ad = await Agent.GetNativeAd(View.Parameters);
+                await CreateAdView(ad);
+            }
+            else await LoadNext();
         }
 
         async Task LoadNext()

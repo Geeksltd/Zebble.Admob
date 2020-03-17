@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Zebble.AdMob
@@ -8,16 +7,22 @@ namespace Zebble.AdMob
     public partial class AdAgent
     {
         public bool IsVideoMuted { get; set; }
+        public bool IsPreLoad { get; private set; }
+        public AdParameters PreLoadAdParameters { get; set; }
         public string UnitId { get; set; }
 
         internal ConcurrentList<NativeAdInfo> Ads { get; set; }
         internal DateTime LastUpdate { get; set; }
         internal TimeSpan WaitingToLoad = 2.Minutes();
 
-        public AdAgent(string unitId)
+        public AdAgent(string unitId, bool isPreLoad = false)
         {
             UnitId = unitId;
+            IsPreLoad = isPreLoad;
             Ads = new ConcurrentList<NativeAdInfo>();
+
+            if (isPreLoad)
+                RequestNativeAd(PreLoadAdParameters ?? new AdParameters());
         }
 
         TaskCompletionSource<NativeAdInfo> NextNativeAd;

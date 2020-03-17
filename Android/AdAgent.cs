@@ -59,7 +59,7 @@ namespace Zebble.AdMob
                 var currentAd = new NativeAdInfo(ad);
                 Agent.LastUpdate = DateTime.Now;
 
-                if (Agent.Ads.None())
+                if (Agent.Ads.None() && !Agent.IsPreLoad)
                 {
                     Agent.OnNativeAdReady(currentAd);
                     currentAd.IsShown = true;
