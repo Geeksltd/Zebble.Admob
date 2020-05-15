@@ -15,15 +15,22 @@ namespace Zebble.AdMob
 
         public IOSNativeAdView(NativeAdView view)
         {
-            View = view;
+            try
+            {
+                View = view;
 
-            NativeView = new UnifiedNativeAdView { Frame = View.GetFrame() };
-            Add(NativeView);
+                NativeView = new UnifiedNativeAdView { Frame = View.GetFrame() };
+                Add(NativeView);
 
-            Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+                Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
 
-            view.RotateRequested.Handle(LoadNext);
-            LoadAds().RunInParallel();
+                view.RotateRequested.Handle(LoadNext);
+                LoadAds().RunInParallel();
+            }
+            catch (Exception ex)
+            {
+                Device.Log.Error($"[Zebble.Admob] => {ex.Message}");
+            }
         }
 
         async Task LoadAds()

@@ -31,29 +31,36 @@ namespace Zebble.AdMob
 
         public AndroidNativeAdView(NativeAdView view) : base(Renderer.Context)
         {
-            View = view;
-
-            TapRecognizer = new TapGestureRecognizer { OnGestureRecognized = HandleTapped, NativeView = this };
-            PanRecognizer = new PanGestureRecognizer(p => DetectHandler(p)) { NativeView = this };
-
-            view.Panning.Handle(args =>
+            try
             {
-                CurrentAd?.Native?.CancelUnconfirmedClick();
+                View = view;
 
-                var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
-                if (handlerParent != null)
-                    handlerParent.RaisePanning(args);
-            });
+                TapRecognizer = new TapGestureRecognizer { OnGestureRecognized = HandleTapped, NativeView = this };
+                PanRecognizer = new PanGestureRecognizer(p => DetectHandler(p)) { NativeView = this };
 
-            AddView(NativeView = new UnifiedNativeAdView(Renderer.Context)
+                view.Panning.Handle(args =>
+                {
+                    CurrentAd?.Native?.CancelUnconfirmedClick();
+
+                    var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
+                    if (handlerParent != null)
+                        handlerParent.RaisePanning(args);
+                });
+
+                AddView(NativeView = new UnifiedNativeAdView(Renderer.Context)
+                {
+                    LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
+                });
+
+                Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+
+                view.RotateRequested.Handle(LoadNext);
+                LoadAds().RunInParallel();
+            }
+            catch (Exception ex)
             {
-                LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
-            });
-
-            Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
-
-            view.RotateRequested.Handle(LoadNext);
-            LoadAds().RunInParallel();
+                Device.Log.Error($"[Zebble.Admob] => {ex.Message}");
+            }
         }
 
         protected override void Dispose(bool disposing)
