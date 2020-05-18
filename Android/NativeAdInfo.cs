@@ -29,11 +29,19 @@ namespace Zebble.AdMob
         {
             if (drawable == null) return new byte[0];
 
-            var bitmap = ((BitmapDrawable)drawable).Bitmap;
-            using (var stream = new MemoryStream())
+            try
             {
-                bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
-                return stream.ReadAllBytes();
+                var bitmap = ((BitmapDrawable)drawable).Bitmap;
+                using (var stream = new MemoryStream())
+                {
+                    bitmap.Compress(Bitmap.CompressFormat.Jpeg, 100, stream);
+                    return stream.ReadAllBytes();
+                }
+            }
+            catch (Exception ex)
+            {
+                Zebble.Device.Log.Error(ex);
+                return new byte[0];
             }
         }
     }

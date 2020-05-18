@@ -29,11 +29,19 @@ namespace Zebble.AdMob
         {
             if (img == null) return new byte[0];
 
-            using (var imageData = img.AsPNG())
+            try
             {
-                var image = new byte[imageData.Length];
-                System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, image, 0, Convert.ToInt32(imageData.Length));
-                return image;
+                using (var imageData = img.AsPNG())
+                {
+                    var image = new byte[imageData.Length];
+                    System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, image, 0, Convert.ToInt32(imageData.Length));
+                    return image;
+                }
+            }
+            catch (Exception ex)
+            {
+                Zebble.Device.Log.Error(ex);
+                return new byte[0];
             }
         }
     }
