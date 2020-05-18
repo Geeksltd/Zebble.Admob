@@ -15,6 +15,13 @@ namespace Zebble.AdMob
 
             var builder = new AdLoader.Builder(Renderer.Context, UnitId);
             builder.ForUnifiedNativeAd(new UnifiedNativeAdListener(this));
+
+            var adOptions = new NativeAdOptions.Builder()
+                     .SetVideoOptions(new VideoOptions.Builder().SetStartMuted(true).Build())
+                     .Build();
+
+            builder.WithNativeAdOptions(adOptions);
+
             builder.WithAdListener(new ZebbleAdListener(this));
 
             Loader = builder.Build();
