@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\lib\Zebble.Admob.Android.xml</DocumentationFile>
-    <NoWarn>9015</NoWarn>
+    <NoWarn>9015;1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -163,7 +163,7 @@
       <HintPath>..\packages\Xamarin.GooglePlayServices.Measurement.Sdk.Api.71.1630.0\lib\monoandroid90\Xamarin.GooglePlayServices.Measurement.Sdk.Api.dll</HintPath>
     </Reference>
     <Reference Include="Zebble.Android, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.4.4.322\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
+      <HintPath>..\packages\Zebble.4.4.339\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +179,8 @@
     <Compile Include="AndroidRewardedVideo.cs" />
     <Compile Include="AdmobViewRenderer.cs" />
     <Compile Include="NativeAdInfo.cs" />
+    <Compile Include="UnifiedNativeAdListener.cs" />
+    <Compile Include="ZebbleAdListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Zebble.exe" />
@@ -283,6 +285,6 @@
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.105\lib\MonoAndroid10</PostBuildEvent>
+    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.108\lib\MonoAndroid10</PostBuildEvent>
   </PropertyGroup>
 </Project>

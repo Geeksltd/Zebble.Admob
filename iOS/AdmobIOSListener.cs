@@ -21,7 +21,7 @@ namespace Zebble.AdMob
                     errorMessage = "The ad request was successful, but no ad was returned due to lack of ad inventory.";
                     break;
                 default:
-                    errorMessage = null;
+                    errorMessage = "Error loading an ad";
                     break;
             }
         }
@@ -43,7 +43,7 @@ namespace Zebble.AdMob
                     error = "The ad can not be shown when the app is not in foreground.";
                     break;
                 default:
-                    error = null;
+                    error = "Failed to load an ad";
                     break;
             }
         }

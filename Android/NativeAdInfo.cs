@@ -10,6 +10,8 @@ namespace Zebble.AdMob
     {
         public UnifiedNativeAd Native { get; private set; }
 
+        public NativeAdInfo() { }
+
         public NativeAdInfo(UnifiedNativeAd ad)
         {
             Native = ad;

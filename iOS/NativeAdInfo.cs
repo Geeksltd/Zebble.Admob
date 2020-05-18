@@ -10,6 +10,8 @@ namespace Zebble.AdMob
     {
         public UnifiedNativeAd Native { get; private set; }
 
+        public NativeAdInfo() { }
+
         public NativeAdInfo(UnifiedNativeAd ad)
         {
             Native = ad;
@@ -27,7 +29,7 @@ namespace Zebble.AdMob
         {
             if (img == null) return new byte[0];
 
-            using (NSData imageData = img.AsPNG())
+            using (var imageData = img.AsPNG())
             {
                 var image = new byte[imageData.Length];
                 System.Runtime.InteropServices.Marshal.Copy(imageData.Bytes, image, 0, Convert.ToInt32(imageData.Length));

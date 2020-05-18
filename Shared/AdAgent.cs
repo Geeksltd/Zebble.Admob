@@ -1,96 +1,89 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Zebble.AdMob
 {
     public partial class AdAgent
     {
-        public bool IsVideoMuted { get; set; }
-        public bool IsPreLoad { get; private set; }
-        public AdParameters PreLoadAdParameters { get; set; }
+        int Iterator;
         public string UnitId { get; set; }
+        TaskCompletionSource<NativeAdInfo> NextNativeAd;
+        internal readonly ConcurrentList<NativeAdInfo> Ads = new ConcurrentList<NativeAdInfo>();
+        internal DateTime LastFetched { get; set; }
+        public string Keywords { get; set; }
+        internal TimeSpan RefetchMinimumWait = 2.Minutes();
 
-        internal ConcurrentList<NativeAdInfo> Ads { get; set; }
-        internal DateTime LastUpdate { get; set; }
-        internal TimeSpan WaitingToLoad = 2.Minutes();
-
-        public AdAgent(string unitId, bool isPreLoad = false)
+        public AdAgent(string unitId)
         {
             UnitId = unitId;
-            IsPreLoad = isPreLoad;
-            Ads = new ConcurrentList<NativeAdInfo>();
-
-            if (isPreLoad)
-                RequestNativeAd(PreLoadAdParameters ?? new AdParameters());
+            Thread.Pool.Run(FetchNew).RunInParallel();
         }
 
-        TaskCompletionSource<NativeAdInfo> NextNativeAd;
+        TimeSpan SinceLastFetched => DateTime.UtcNow.Subtract(LastFetched);
 
         public void OnAdFailedToLoad(string reason) => NextNativeAd?.TrySetResult(FailedNativeAdInfo.Create(reason));
 
         public void OnNativeAdReady(NativeAdInfo ad) => NextNativeAd?.TrySetResult(ad);
 
-        public Task<NativeAdInfo> GetNativeAd(AdParameters request)
+        /// <summary>
+        /// Refreshes the Ads and then returns the first one.
+        /// </summary>
+        public Task<NativeAdInfo> Fetch()
         {
+            if (SinceLastFetched < RefetchMinimumWait)
+            {
+                if (TryReuse(out var result)) return result;
+            }
+
+            return FetchNew();
+        }
+
+        Task<NativeAdInfo> FetchNew()
+        {
+            LastFetched = DateTime.UtcNow;
             NextNativeAd = new TaskCompletionSource<NativeAdInfo>();
-            RequestNativeAd(request);
+            RequestNativeAds();
+
             return NextNativeAd.Task;
         }
 
-        internal void ResetAdsList() => Ads.Do(ad => ad.IsShown = false);
-    }
-
-    public class AdParameters
-    {
-        public string Keywords;
-    }
-
-    public class FailedNativeAdInfo : NativeAdInfo
-    {
-        static Func<string, FailedNativeAdInfo> CustomProvider;
-        public virtual string ImageUrl { get; set; }
-        public virtual string TargetUrl { get; set; }
-
-        public static void OnRequested(Func<string, FailedNativeAdInfo> provider) => CustomProvider = provider;
-
-        internal static FailedNativeAdInfo Create(string reason)
+        bool TryReuse(out Task<NativeAdInfo> result)
         {
-            return CustomProvider?.Invoke(reason) ?? new
+            var ads = Ads?.ToArray();
 
-            FailedNativeAdInfo
+            if (ads.None())
             {
-                Headline = "Ad loading failed",
-                Body = reason,
-                CallToAction = "Try again later",
-            };
-        }
-    }
+                if (NextNativeAd != null)
+                {
+                    result = NextNativeAd.Task;
+                    return true;
+                }
+                else
+                {
+                    result = null;
+                    return false;
+                }
+            }
 
-    public partial class NativeAdInfo
-    {
-        public virtual string Headline { get; set; } = "...";
-        public virtual string Price { get; set; }
-        public virtual string Advertiser { get; set; }
-        public virtual string Body { get; set; }
-        public virtual double? StarRating { get; set; }
-        public virtual string Store { get; set; }
-        public virtual string CallToAction { get; set; } = "Open";
-        public virtual byte[] Icon { get; set; }
-
-        public bool HasData
-        {
-            get
+            lock (this)
             {
-                if (Headline.None() && Body.None() && CallToAction.None()) return false;
+                if (Iterator >= ads.Length) Iterator = 0;
+
+                var item = ads.ElementAtOrDefault(Iterator) ?? ads.First();
+                Iterator++;
+                result = Task.FromResult(item);
                 return true;
             }
         }
 
-        internal bool IsShown { get; set; }
-
-        public NativeAdInfo()
+        internal void OnFetched(NativeAdInfo ad)
         {
+            Ads.Add(ad);
+
+            if (Ads.IsSingle())
+                OnNativeAdReady(ad);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Zebble.AdMob
             NativeAdsManager.AdReady += NativeAdsManager_AdReady;
         }
 
-        void RequestNativeAd(AdParameters request)
+        void RequestNativeAds()
         {
             if (NativeAdsManager == null)
                 Initialize();

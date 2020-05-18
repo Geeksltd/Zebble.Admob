@@ -8,6 +8,8 @@ namespace Zebble.AdMob
     {
         public NativeAdV2 Native { get; private set; }
 
+        public NativeAdInfo() { }
+
         public NativeAdInfo(NativeAdV2 ad)
         {
             Native = ad;
@@ -23,7 +25,7 @@ namespace Zebble.AdMob
         static async Task<byte[]> ToByteArray(NativeImage img)
         {
             //if (img == null) 
-                return new byte[0];
+            return new byte[0];
 
             var data = await Device.Network.Download(new Uri(img.Url));
             return data;

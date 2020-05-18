@@ -37,17 +37,13 @@ namespace Zebble.AdMob
         {
             RewardedVideoAd Ad;
 
-            public AdmobRewardedAdLoadCallback(RewardedVideoAd ad)
-            {
-                Ad = ad;
-            }
+            public AdmobRewardedAdLoadCallback(RewardedVideoAd ad) => Ad = ad;
 
             public override void OnRewardedAdLoaded() => Ad.OnAdLoaded.Raise();
 
             public override void OnRewardedAdFailedToLoad(int p0)
             {
-                string error;
-                AdmobAndroidListener.OnAdError(p0, out error);
+                AdmobAndroidListener.OnAdError(p0, out var error);
                 Ad.OnAdFailed.Raise(error);
             }
         }
@@ -56,23 +52,20 @@ namespace Zebble.AdMob
         {
             RewardedVideoAd Ad;
 
-            public AdmobRewardedAdCallback(RewardedVideoAd ad)
-            {
-                Ad = ad;
-            }
+            public AdmobRewardedAdCallback(RewardedVideoAd ad) => Ad = ad;
 
             public override void OnRewardedAdClosed() => Ad.OnAdClosed.Raise();
 
             public override void OnRewardedAdFailedToShow(int p0)
             {
-                string error;
-                AdmobAndroidListener.OnRewardedAdError(p0, out error);
+                AdmobAndroidListener.OnRewardedAdError(p0, out var error);
                 Ad.OnAdShowFailed.Raise(error);
             }
 
             public override void OnRewardedAdOpened() => Ad.OnAdOpened.Raise();
 
-            public override void OnUserEarnedReward(IRewardItem p0) => Ad.OnEarnedReward.Raise(new RewardItemArgs { Amount = p0.Amount, Type = p0.Type });
+            public override void OnUserEarnedReward(IRewardItem p0)
+                => Ad.OnEarnedReward.Raise(new RewardItemArgs { Amount = p0.Amount, Type = p0.Type });
         }
     }
 }

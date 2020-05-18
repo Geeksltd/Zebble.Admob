@@ -23,8 +23,7 @@ namespace Zebble.AdMob
                 var error = await NativeAd.LoadRequestAsync(Request.GetDefaultRequest());
                 if (error != null)
                 {
-                    string errorMessage;
-                    AdmobIOSListener.OnError(error, out errorMessage);
+                    AdmobIOSListener.OnError(error, out var errorMessage);
                     await OnAdFailed.Raise(errorMessage);
                 }
                 else await OnAdLoaded.Raise();
@@ -39,8 +38,7 @@ namespace Zebble.AdMob
                 return;
             }
 
-            var rootViewController = UIRuntime.NativeRootScreen as UIViewController;
-            if (rootViewController != null)
+            if (UIRuntime.NativeRootScreen is UIViewController rootViewController)
                 NativeAd.Present(rootViewController, new RewardedVideoDelegate(this));
         });
 
@@ -58,8 +56,7 @@ namespace Zebble.AdMob
 
             public void DidFailToPresent(RewardedAd rewardedAd, NSError error)
             {
-                string errorMessage;
-                AdmobIOSListener.OnRewardedAdError((int)error.Code, out errorMessage);
+                AdmobIOSListener.OnRewardedAdError((int)error.Code, out var errorMessage);
                 Ad.OnAdShowFailed.Raise(errorMessage);
             }
 

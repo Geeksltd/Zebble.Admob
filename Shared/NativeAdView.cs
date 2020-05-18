@@ -1,12 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Zebble.AdMob
 {
     public partial class NativeAdView : AdmobView, IZebbleAdView, IRenderedBy<AdmobViewRenderer>
     {
+        public void Rotate() => RotateRequested?.Invoke();
+
         public readonly Bindable<NativeAdInfo> Ad = new Bindable<NativeAdInfo>(new NativeAdInfo());
         public readonly AsyncEvent OnVideoEnded = new AsyncEvent();
-        internal readonly AsyncEvent RotateRequested = new AsyncEvent();
+        internal event Action RotateRequested;
         internal TextView Adbadge = new TextView("Ad");
 
         public override async Task OnInitializing()
@@ -20,8 +23,6 @@ namespace Zebble.AdMob
             await Add(Adbadge);
         }
 
-        public void Rotate() => RotateRequested.RaiseOn(Thread.UI);
-
         public AdmobTypes AdType => AdmobTypes.Native;
 
         public TextView HeadLineView { get; set; }
@@ -34,6 +35,5 @@ namespace Zebble.AdMob
         public AdmobMediaView MediaView { get; set; }
 
         public AdAgent Agent { get; set; }
-        public readonly AdParameters Parameters = new AdParameters();
     }
 }

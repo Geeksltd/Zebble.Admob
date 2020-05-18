@@ -6,10 +6,7 @@ namespace Zebble.AdMob
     {
         IZebbleAdNativeView<TView> AdView;
 
-        public AdmobAndroidListener(IZebbleAdNativeView<TView> adView)
-        {
-            AdView = adView;
-        }
+        public AdmobAndroidListener(IZebbleAdNativeView<TView> adView) => AdView = adView;
 
         public override void OnAdClicked() => AdView.View.OnAdTapped.Raise();
 
@@ -19,8 +16,7 @@ namespace Zebble.AdMob
 
         public override void OnAdFailedToLoad(int p0)
         {
-            string error;
-            AdmobAndroidListener.OnAdError(p0, out error);
+            AdmobAndroidListener.OnAdError(p0, out var error);
             AdView.View.OnAdFailed.Raise(error);
         }
 
@@ -50,6 +46,7 @@ namespace Zebble.AdMob
                     break;
             }
         }
+
         public static void OnRewardedAdError(int arg, out string error)
         {
             switch (arg)

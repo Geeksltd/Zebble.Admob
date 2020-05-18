@@ -6,9 +6,6 @@ namespace Zebble.AdMob
     {
         AdmobMediaView View;
 
-        public AdmobIOSMediaView(AdmobMediaView view)
-        {
-            View = view;
-        }
+        public AdmobIOSMediaView(AdmobMediaView view) => View = view;
     }
 }

@@ -21,17 +21,16 @@ namespace Zebble.AdMob
             };
         }
 
-        void RequestNativeAd(AdParameters request)
+        void RequestNativeAds()
         {
-            if (Loader == null)
-                Initialize();
+            if (Loader == null) Initialize();
 
             var adRequest = Request.GetDefaultRequest();
 
             foreach (var id in Config.Get("Admob.iOS.Test.Device.Ids").OrEmpty().Split(',').Trim())
                 adRequest.TestDevices.AddLine(id);
 
-            if (request.Keywords.HasValue()) adRequest.Keywords.AddLine(request.Keywords);
+            if (Keywords.HasValue()) adRequest.Keywords = new[] { Keywords };
             Loader.LoadRequest(adRequest);
         }
 
@@ -43,23 +42,13 @@ namespace Zebble.AdMob
 
             public void DidFailToReceiveAd(AdLoader adLoader, RequestError error)
             {
-                string errorMessage;
-                AdmobIOSListener.OnError(error, out errorMessage);
-                Device.Log.Error(errorMessage);
+                AdmobIOSListener.OnError(error, out var errorMessage);
+                Agent.OnAdFailedToLoad(errorMessage);
             }
 
             public void DidReceiveUnifiedNativeAd(AdLoader adLoader, UnifiedNativeAd nativeAd)
             {
-                var currentAd = new NativeAdInfo(nativeAd);
-                Agent.LastUpdate = DateTime.Now;
-
-                if (Agent.Ads.None() && !Agent.IsPreLoad)
-                {
-                    Agent.OnNativeAdReady(currentAd);
-                    currentAd.IsShown = true;
-                }
-
-                Agent.Ads.Add(currentAd);
+                Agent.OnFetched(new NativeAdInfo(nativeAd));
             }
         }
     }

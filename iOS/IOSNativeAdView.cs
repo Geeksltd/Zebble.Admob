@@ -10,7 +10,6 @@ namespace Zebble.AdMob
     {
         public NativeAdView View { get; set; }
         UnifiedNativeAdView NativeView;
-        NativeAdInfo CurrentAd;
         AdAgent Agent;
 
         public IOSNativeAdView(NativeAdView view)
@@ -18,14 +17,15 @@ namespace Zebble.AdMob
             try
             {
                 View = view;
+                View.RotateRequested += LoadNext;
 
                 NativeView = new UnifiedNativeAdView { Frame = View.GetFrame() };
                 Add(NativeView);
+                View.WhenShown(ConfigureAdView).RunInParallel();
 
                 Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+                LoadNext();
 
-                view.RotateRequested.Handle(LoadNext);
-                LoadAds().RunInParallel();
             }
             catch (Exception ex)
             {
@@ -33,52 +33,21 @@ namespace Zebble.AdMob
             }
         }
 
-        async Task LoadAds()
+        void LoadNext()
         {
-            if (Agent.Ads.None())
+            Agent.Fetch().ContinueWith(t =>
             {
-                var ad = await Agent.GetNativeAd(View.Parameters);
-                await CreateAdView(ad);
-            }
-            else await LoadNext();
+                if (View == null || View.IsDisposing) return;
+                if (t.IsFaulted) return;
+
+                var ad = t.GetAlreadyCompletedResult();
+                Thread.UI.Run(() => RenderAd(ad));
+            });
         }
 
-        async Task LoadNext()
+        Task ConfigureAdView()
         {
-            var ad = Agent.Ads.FirstOrDefault(x => !x.IsShown);
-            if (ad == null)
-            {
-                var ts = DateTime.Now.Subtract(Agent.LastUpdate).TotalSeconds;
-                if (ts > Agent.WaitingToLoad.TotalSeconds)
-                    LoadAds().RunInParallel();
-                else
-                {
-                    Agent.ResetAdsList();
-                    Task.Delay(Agent.WaitingToLoad).ContinueWith(t =>
-                    {
-                        if (t.IsCompleted)
-                        {
-                            Agent.Ads.Clear();
-                            LoadAds().RunInParallel();
-                        }
-                    }).RunInParallel();
-                }
-            }
-            else
-            {
-                await CreateAdView(ad);
-                ad.IsShown = true;
-            }
-        }
-
-        Task CreateAdView(NativeAdInfo ad)
-        {
-            CurrentAd = ad;
-            View.Ad.Value = ad;
-
             NativeView.MediaView = View.MediaView?.Native() as AdmobIOSMediaView;
-            NativeView.MediaView.MediaContent = ad.Native.MediaContent;
-
             NativeView.HeadlineView = View.HeadLineView?.Native();
             NativeView.BodyView = View.BodyView?.Native();
             NativeView.CallToActionView = View.CallToActionView?.Native();
@@ -87,9 +56,37 @@ namespace Zebble.AdMob
             NativeView.StoreView = View.StoreView?.Native();
             NativeView.AdvertiserView = View.AdvertiserView?.Native();
 
-            NativeView.NativeAd = ad.Native;
-
             return Task.CompletedTask;
+        }
+
+        void RenderAd(NativeAdInfo ad)
+        {
+            if (ad is null) return;
+
+            if (ad is FailedNativeAdInfo)
+            {
+                View.HeadLineView.Text = ad.Headline;
+                View.BodyView.Text = ad.Body;
+                View.CallToActionView.Text = ad.CallToAction;
+                return;
+            }
+            else
+            {
+                View.Ad.Value = ad;
+                NativeView.MediaView.MediaContent = ad.Native.MediaContent;
+                NativeView.NativeAd = ad.Native;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && View != null)
+            {
+                View = null;
+                View.RotateRequested += LoadNext;
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
