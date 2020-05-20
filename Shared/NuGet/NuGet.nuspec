@@ -23,6 +23,7 @@
   <files>
     <file src="..\..\lib\Zebble.Admob.iOS.*" target="lib\Xamarin.iOS10\" />
     <file src="..\..\lib\Zebble.Admob.Android.*" target="lib\MonoAndroid10\" />
+    <file src="..\..\lib\Zebble.Admob.UWP.*" target="lib\UAP10.0" />
     <file src="..\..\lib\bin\ARM\Release\Zebble.Admob.UWP.*" target="runtimes\win10-arm\lib\uap10.0" />
     <file src="..\..\lib\bin\x64\Release\Zebble.Admob.UWP.*" target="runtimes\win10-x64\lib\uap10.0" />
     <file src="..\..\lib\bin\x86\Release\Zebble.Admob.UWP.*" target="runtimes\win10-x86\lib\uap10.0" />
