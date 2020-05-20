@@ -1,4 +1,5 @@
-﻿using Google.MobileAds;
+﻿using Firebase.Analytics;
+using Google.MobileAds;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -80,13 +81,19 @@ namespace Zebble.AdMob
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && View != null)
+            try
             {
-                View = null;
-                View.RotateRequested += LoadNext;
+                if (disposing && View != null)
+                {
+                    View = null;
+                    View.RotateRequested += LoadNext;
+                }
+                base.Dispose(disposing);
             }
-
-            base.Dispose(disposing);
+            catch(Exception ex)
+            {
+                Device.Log.Error(ex);
+            }
         }
     }
 }
