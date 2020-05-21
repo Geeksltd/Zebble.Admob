@@ -63,8 +63,8 @@ namespace Zebble.AdMob
             IsDisposing = true;
             if (disposing && View != null)
             {
+                View.RotateRequested -= LoadNext;
                 View = null;
-                View.RotateRequested += LoadNext;
             }
 
             base.Dispose(disposing);

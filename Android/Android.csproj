@@ -163,7 +163,7 @@
       <HintPath>..\packages\Xamarin.GooglePlayServices.Measurement.Sdk.Api.71.1630.0\lib\monoandroid90\Xamarin.GooglePlayServices.Measurement.Sdk.Api.dll</HintPath>
     </Reference>
     <Reference Include="Zebble.Android, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Zebble.4.4.339\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
+      <HintPath>..\packages\Zebble.4.4.340\lib\MonoAndroid10\Zebble.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -285,6 +285,6 @@
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.Lite.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.Lite.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Ads.71.1720.1\build\MonoAndroid90\Xamarin.GooglePlayServices.Ads.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.110\lib\MonoAndroid10</PostBuildEvent>
+    <PostBuildEvent>copy /y $(OutDir)Zebble.Admob.Android.* E:\Projects\WordUp2019\Wordatown.App\packages\Zebble.Admob.1.1.111\lib\MonoAndroid10</PostBuildEvent>
   </PropertyGroup>
 </Project>
