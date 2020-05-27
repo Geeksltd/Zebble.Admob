@@ -31,14 +31,7 @@ namespace Zebble.AdMob
                 View = view;
                 View.RotateRequested += LoadNext;
 
-                view.Panning.Handle(args =>
-                {
-                    CurrentAd?.Native?.CancelUnconfirmedClick();
-
-                    var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
-                    if (handlerParent != null)
-                        handlerParent.RaisePanning(args);
-                });
+                EscalatePanningEvent();
 
                 AddView(NativeView = new UnifiedNativeAdView(Renderer.Context)
                 {
@@ -56,6 +49,20 @@ namespace Zebble.AdMob
             {
                 Device.Log.Error($"[Zebble.Admob] => {ex.Message}");
             }
+        }
+
+        void EscalatePanningEvent()
+        {
+            if (IsDead(out var view)) return;
+
+            view.Panning.Handle(args =>
+            {
+                CurrentAd?.Native?.CancelUnconfirmedClick();
+
+                var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
+                if (handlerParent != null)
+                    handlerParent.RaisePanning(args);
+            });
         }
 
         protected override void Dispose(bool disposing)
