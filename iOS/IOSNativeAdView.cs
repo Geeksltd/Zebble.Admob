@@ -38,7 +38,7 @@ namespace Zebble.AdMob
         {
             Agent.Fetch().ContinueWith(t =>
             {
-                if (View == null || View.IsDisposing) return;
+                if (IsDead(out var view)) return;
                 if (t.IsFaulted) return;
 
                 var ad = t.GetAlreadyCompletedResult();
@@ -48,14 +48,16 @@ namespace Zebble.AdMob
 
         Task ConfigureAdView()
         {
-            NativeView.MediaView = View.MediaView?.Native() as AdmobIOSMediaView;
-            NativeView.HeadlineView = View.HeadLineView?.Native();
-            NativeView.BodyView = View.BodyView?.Native();
-            NativeView.CallToActionView = View.CallToActionView?.Native();
-            NativeView.IconView = View.IconView?.Native();
-            NativeView.PriceView = View.PriceView?.Native();
-            NativeView.StoreView = View.StoreView?.Native();
-            NativeView.AdvertiserView = View.AdvertiserView?.Native();
+            if (IsDead(out var view)) return Task.CompletedTask;
+
+            NativeView.MediaView = view.MediaView?.Native() as AdmobIOSMediaView;
+            NativeView.HeadlineView = view.HeadLineView?.Native();
+            NativeView.BodyView = view.BodyView?.Native();
+            NativeView.CallToActionView = view.CallToActionView?.Native();
+            NativeView.IconView = view.IconView?.Native();
+            NativeView.PriceView = view.PriceView?.Native();
+            NativeView.StoreView = view.StoreView?.Native();
+            NativeView.AdvertiserView = view.AdvertiserView?.Native();
 
             return Task.CompletedTask;
         }
@@ -63,19 +65,28 @@ namespace Zebble.AdMob
         void RenderAd(NativeAdInfo ad)
         {
             if (ad is null) return;
+            if (IsDead(out var view)) return;
 
             if (ad is FailedNativeAdInfo)
             {
-                View.HeadLineView.Text = ad.Headline;
-                View.BodyView.Text = ad.Body;
-                View.CallToActionView.Text = ad.CallToAction;
+                view.HeadLineView.Text = ad.Headline;
+                view.BodyView.Text = ad.Body;
+                view.CallToActionView.Text = ad.CallToAction;
                 return;
             }
             else
             {
-                View.Ad.Value = ad;
-                NativeView.MediaView.MediaContent = ad.Native.MediaContent;
-                NativeView.NativeAd = ad.Native;
+                try
+                {
+                    view.Ad.Value = ad;
+                    NativeView.NativeAd = ad.Native;
+                    if (NativeView.MediaView != null)
+                        NativeView.MediaView.MediaContent = ad.Native.MediaContent;
+                }
+                catch (Exception ex)
+                {
+                    Device.Log.Error(ex);
+                }
             }
         }
 
@@ -94,6 +105,13 @@ namespace Zebble.AdMob
             {
                 Device.Log.Error(ex);
             }
+        }
+
+        [EscapeGCop("In this case an out parameter can improve the code.")]
+        bool IsDead(out NativeAdView result)
+        {
+            result = View;
+            return result != null && !result.IsDisposing;
         }
     }
 }
