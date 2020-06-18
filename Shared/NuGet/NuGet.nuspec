@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>Zebble.Admob</id>
-    <version>1.1.115</version>
+    <version>1.1.116</version>
     <title>Google Adv for Zebble (Xamarin)</title>
     <projectUrl>https://github.com/Geeksltd/Zebble.Admob</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Geeksltd/Zebble.Admob/master/Shared/NuGet/Icon.png</iconUrl>
