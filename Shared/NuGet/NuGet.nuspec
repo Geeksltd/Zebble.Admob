@@ -12,8 +12,8 @@
     <owners>Geeks Ltd</owners>
     <dependencies>
       <group targetFramework="MonoAndroid10">
-        <dependency id="Xamarin.GooglePlayServices.Ads" version="71.1720.1"></dependency>
-        <dependency id="Xamarin.GooglePlayServices.Ads.Lite" version="71.1720.1"></dependency>
+        <dependency id="Xamarin.GooglePlayServices.Ads" version="118.1.1-preview01"></dependency>
+        <dependency id="Xamarin.GooglePlayServices.Ads.Lite" version="118.1.1-preview01"></dependency>
       </group>
       <group targetFramework="Xamarin.iOS10">
         <dependency id="Xamarin.Firebase.iOS.AdMob" version="7.47.0"></dependency>
