@@ -46,20 +46,21 @@ namespace Zebble.AdMob
             });
         }
 
-        Task ConfigureAdView()
+        void ConfigureAdView()
         {
-            if (IsDead(out var view)) return Task.CompletedTask;
+            Thread.UI.Run(() =>
+           {
+               if (IsDead(out var view)) return;
 
-            NativeView.MediaView = view.MediaView?.Native() as AdmobIOSMediaView;
-            NativeView.HeadlineView = view.HeadLineView?.Native();
-            NativeView.BodyView = view.BodyView?.Native();
-            NativeView.CallToActionView = view.CallToActionView?.Native();
-            NativeView.IconView = view.IconView?.Native();
-            NativeView.PriceView = view.PriceView?.Native();
-            NativeView.StoreView = view.StoreView?.Native();
-            NativeView.AdvertiserView = view.AdvertiserView?.Native();
-
-            return Task.CompletedTask;
+               NativeView.MediaView = view.MediaView?.Native() as AdmobIOSMediaView;
+               NativeView.HeadlineView = view.HeadLineView?.Native();
+               NativeView.BodyView = view.BodyView?.Native();
+               NativeView.CallToActionView = view.CallToActionView?.Native();
+               NativeView.IconView = view.IconView?.Native();
+               NativeView.PriceView = view.PriceView?.Native();
+               NativeView.StoreView = view.StoreView?.Native();
+               NativeView.AdvertiserView = view.AdvertiserView?.Native();
+           });
         }
 
         void RenderAd(NativeAdInfo ad)
