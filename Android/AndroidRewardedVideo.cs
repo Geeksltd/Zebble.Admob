@@ -17,7 +17,7 @@ namespace Zebble.AdMob
                     return;
                 }
 
-                NativeView = new RewardedAd(Renderer.Context, UnitId);
+                NativeView = new RewardedAd(UIRuntime.CurrentActivity, UnitId);
                 NativeView.LoadAd(new Android.Gms.Ads.AdRequest.Builder().Build(), new AdmobRewardedAdLoadCallback(this));
             });
         }

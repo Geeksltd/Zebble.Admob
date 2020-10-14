@@ -13,7 +13,7 @@ namespace Zebble.AdMob
         [Preserve]
         public AdmobAndroidMediaView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
-        public AdmobAndroidMediaView(AdmobMediaView view) : base(Renderer.Context)
+        public AdmobAndroidMediaView(AdmobMediaView view) : base(UIRuntime.CurrentActivity)
         {
             View = view;
             LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);

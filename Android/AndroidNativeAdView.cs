@@ -24,7 +24,7 @@ namespace Zebble.AdMob
         [Preserve]
         public AndroidNativeAdView(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer) { }
 
-        public AndroidNativeAdView(NativeAdView view) : base(Renderer.Context)
+        public AndroidNativeAdView(NativeAdView view) : base(UIRuntime.CurrentActivity)
         {
             try
             {
@@ -33,10 +33,10 @@ namespace Zebble.AdMob
 
                 EscalatePanningEvent();
 
-                AddView(NativeView = new UnifiedNativeAdView(Renderer.Context)
+                AddView(NativeView = new UnifiedNativeAdView(UIRuntime.CurrentActivity)
                 {
                     LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent),
-                    AdChoicesView = new AdChoicesView(Renderer.Context) { LayoutParameters = new ViewGroup.LayoutParams(25, 25) }
+                    AdChoicesView = new AdChoicesView(UIRuntime.CurrentActivity) { LayoutParameters = new ViewGroup.LayoutParams(25, 25) }
                 });
 
                 View.WhenShown(ConfigureAdView).RunInParallel();

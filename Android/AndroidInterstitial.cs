@@ -17,7 +17,7 @@ namespace Zebble.AdMob
                     return;
                 }
 
-                interstitialAd = new Ads.InterstitialAd(Renderer.Context);
+                interstitialAd = new Ads.InterstitialAd(UIRuntime.CurrentActivity);
                 interstitialAd.AdUnitId = UnitId;
                 interstitialAd.AdListener = new AndroidAdListener(this);
                 interstitialAd.LoadAd(new Ads.AdRequest.Builder().Build());

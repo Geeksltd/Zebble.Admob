@@ -13,7 +13,7 @@ namespace Zebble.AdMob
             if (Loader != null)
                 throw new InvalidOperationException("AdAgent.Initialize() should only be called once.");
 
-            var builder = new AdLoader.Builder(Renderer.Context, UnitId);
+            var builder = new AdLoader.Builder(UIRuntime.CurrentActivity, UnitId);
             builder.ForUnifiedNativeAd(new UnifiedNativeAdListener(this));
 
             var adOptions = new NativeAdOptions.Builder()
@@ -34,9 +34,6 @@ namespace Zebble.AdMob
 
             var builder = new AdRequest.Builder();
 
-            foreach (var id in Config.Get("Admob.Android.Test.Device.Ids").OrEmpty().Split(',').Trim())
-                builder.AddTestDevice(id);
-
             if (Keywords.HasValue()) builder.AddKeyword(Keywords);
 
             try
@@ -45,8 +42,8 @@ namespace Zebble.AdMob
             }
             catch (Exception ex)
             {
-                // Should not happen.
-                Device.Log.Error(ex);
+               //Should not happen.
+               Device.Log.Error(ex);
             }
         }
     }
