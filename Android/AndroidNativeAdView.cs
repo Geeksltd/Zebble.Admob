@@ -91,7 +91,7 @@ namespace Zebble.AdMob
 
         void ConfigureAdView()
         {
-            Thread.UI.Run(() =>
+            Thread.UI.Post(() =>
             {
                 if (IsDead(out var view)) return;
 

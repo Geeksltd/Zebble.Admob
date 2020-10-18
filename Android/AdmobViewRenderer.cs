@@ -11,11 +11,13 @@ namespace Zebble.AdMob
 
         public Task<Android.Views.View> Render(Renderer renderer)
         {
-            if (renderer.View is NativeAdView native) Result = new AndroidNativeAdView(native);
-            else if (renderer.View is AdmobMediaView media) Result = new AdmobAndroidMediaView(media);
-            else throw new NotSupportedException();
-
-            return Task.FromResult(Result);
+            return Thread.UI.Run(() =>
+            {
+                if (renderer.View is NativeAdView native) Result = new AndroidNativeAdView(native);
+                else if (renderer.View is AdmobMediaView media) Result = new AdmobAndroidMediaView(media);
+                else throw new NotSupportedException();
+                return Task.FromResult(Result);
+            });
         }
 
         public void Dispose()
