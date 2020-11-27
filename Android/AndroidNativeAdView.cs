@@ -129,7 +129,11 @@ namespace Zebble.AdMob
 
                 var vc = ad.Native.VideoController;
                 if (vc.HasVideoContent)
-                    vc.SetVideoLifecycleCallbacks(VideoCallBack);
+                {
+                    var callback = vc.GetVideoLifecycleCallbacks();
+                    if (callback == null)
+                        vc.SetVideoLifecycleCallbacks(VideoCallBack);
+                }
             }
         }
 
