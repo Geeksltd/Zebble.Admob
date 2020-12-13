@@ -41,14 +41,10 @@ namespace Zebble.AdMob
             CurrentAd = ad;
             View.Ad.Value = ad;
 
-            if (ad.Native.MainImages.Count > 0)
+            if (ad is FailedNativeAdInfo psudoAd)
             {
-                var mainImage = ad.Native.MainImages[0];
-                var mainImageImage = ((View.MediaView.Native() as controls.Border)?.Child as AdmobUWPMediaView);
-                if (mainImageImage != null) mainImageImage.SetImage(mainImage);
+                // TODO: Show the ad, similar to Android:
             }
-
-            ad.Native.RegisterAdContainer(Result);
         }
     }
 }
