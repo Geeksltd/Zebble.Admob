@@ -42,7 +42,7 @@ namespace Zebble.AdMob
 
             if (ad is FailedNativeAdInfo psudoAd)
             {
-                // TODO: Show the ad, similar to Android:
+                // This should not happen.
             }
         }
     }
