@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using controls = Windows.UI.Xaml.Controls;
 
 namespace Zebble.AdMob

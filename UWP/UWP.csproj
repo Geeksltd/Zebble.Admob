@@ -112,7 +112,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Zebble">
-      <Version>4.5.407</Version>
+      <Version>4.5.409</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

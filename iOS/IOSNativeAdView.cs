@@ -1,8 +1,5 @@
-﻿using Firebase.Analytics;
-using Google.MobileAds;
+﻿using Google.MobileAds;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 using UIKit;
 
 namespace Zebble.AdMob
