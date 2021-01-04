@@ -1,7 +1,5 @@
-﻿using Foundation;
-using Google.MobileAds;
+﻿using Google.MobileAds;
 using System;
-using System.IO;
 using UIKit;
 
 namespace Zebble.AdMob

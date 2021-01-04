@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Zebble.AdMob
+﻿namespace Zebble.AdMob
 {
     public partial class InterstitialAd
     {

@@ -3,6 +3,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using System;
 using System.IO;
+using Olive;
 
 namespace Zebble.AdMob
 {
