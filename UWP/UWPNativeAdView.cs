@@ -1,5 +1,6 @@
 ﻿using System;
 using controls = Windows.UI.Xaml.Controls;
+using Olive;
 
 namespace Zebble.AdMob
 {
@@ -16,7 +17,7 @@ namespace Zebble.AdMob
 
             Result = new controls.Canvas();
 
-            Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+            Agent = view.Agent ?? throw new Exception(".NativeAdView.Agent is null");
 
             view.RotateRequested += LoadNext;
             LoadNext();
@@ -39,11 +40,6 @@ namespace Zebble.AdMob
         {
             CurrentAd = ad;
             View.Ad.Value = ad;
-
-            if (ad is FailedNativeAdInfo psudoAd)
-            {
-                // This should not happen.
-            }
         }
     }
 }

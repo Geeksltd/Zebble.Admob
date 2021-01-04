@@ -1,6 +1,7 @@
 ﻿using Google.MobileAds;
 using System;
 using UIKit;
+using Olive;
 
 namespace Zebble.AdMob
 {
@@ -21,7 +22,7 @@ namespace Zebble.AdMob
                 Add(NativeView);
                 View.WhenShown(ConfigureAdView).RunInParallel();
 
-                Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+                Agent = view.Agent ?? throw new Exception(".NativeAdView.Agent is null");
                 LoadNext();
 
             }

@@ -68,6 +68,5 @@ namespace Zebble.AdMob
                     break;
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.Admob/master/Shared/NuGet/Icon.png "Zebble.Admob"
+ï»¿[logo]: https://raw.githubusercontent.com/Geeksltd/Zebble.Admob/master/icon.png "Zebble.Admob"
 
 
 ## Zebble.Admob
@@ -143,15 +143,15 @@ In Android platform you need to add this code to android manifest file like belo
 ```xml
 <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="Your Admob applicatin code"/>
 ```
- 
+ï¿½
 #### IOS:
 
-In IOS platform you need to set the scheme and application URL in the “Info.plist” file like below:
+In IOS platform you need to set the scheme and application URL in the ï¿½Info.plistï¿½ file like below:
 
 ```xml
 <plist version="1.0">
   <dict>
-    …
+    ï¿½
   <key>GADApplicationIdentifier</key>
   <string>Your Admob applicatin code</string>
   </dict>

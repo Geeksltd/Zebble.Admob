@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading.Tasks;
 using Android.Gms.Ads;
 using Android.Gms.Ads.Formats;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Olive;
 using Zebble.AndroidOS;
 
 namespace Zebble.AdMob
@@ -41,7 +40,7 @@ namespace Zebble.AdMob
 
                 View.WhenShown(ConfigureAdView).RunInParallel();
 
-                Agent = (view.Agent ?? throw new Exception(".NativeAdView.Agent is null"));
+                Agent = view.Agent ?? throw new Exception(".NativeAdView.Agent is null");
 
                 LoadNext();
             }
@@ -60,8 +59,7 @@ namespace Zebble.AdMob
                 CurrentAd?.Native?.CancelUnconfirmedClick();
 
                 var handlerParent = view.GetAllParents().FirstOrDefault(x => x?.Panning?.IsHandled() == true);
-                if (handlerParent != null)
-                    handlerParent.RaisePanning(args);
+                handlerParent?.RaisePanning(args);
             });
         }
 
