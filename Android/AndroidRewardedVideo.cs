@@ -1,5 +1,6 @@
 ﻿using Android.Gms.Ads.Rewarded;
 using System.Threading.Tasks;
+using Olive;
 
 namespace Zebble.AdMob
 {
@@ -11,7 +12,7 @@ namespace Zebble.AdMob
         {
             return Thread.UI.Run(() =>
             {
-                if (string.IsNullOrEmpty(UnitId))
+                if (UnitId.IsEmpty())
                 {
                     OnAdFailed.Raise("The UnitId of the RewardedVideoView has not specified!");
                     return;

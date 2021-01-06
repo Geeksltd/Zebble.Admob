@@ -4,6 +4,6 @@ namespace Zebble.AdMob
 {
     public partial class Admob
     {
-        public static void InitilizeAd() => MobileAds.Initialize(UIRuntime.CurrentActivity);
+        public static void InitializeAd() => MobileAds.Initialize(UIRuntime.CurrentActivity);
     }
 }
