@@ -44,7 +44,7 @@ namespace Zebble.AdMob
             catch (Exception ex)
             {
                //Should not happen.
-               Device.Log.Error(ex);
+               Log.For(this).Error(ex);
             }
         }
     }

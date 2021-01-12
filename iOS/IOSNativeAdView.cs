@@ -28,7 +28,7 @@ namespace Zebble.AdMob
             }
             catch (Exception ex)
             {
-                Device.Log.Error($"[Zebble.Admob] => {ex.Message}");
+                Log.For(this).Error(ex, "[Zebble.Admob]");
             }
         }
 
@@ -84,7 +84,7 @@ namespace Zebble.AdMob
                 }
                 catch (Exception ex)
                 {
-                    Device.Log.Error(ex);
+                    Log.For(this).Error(ex);
                 }
             }
         }
@@ -102,7 +102,7 @@ namespace Zebble.AdMob
             }
             catch (Exception ex)
             {
-                Device.Log.Error(ex);
+                Log.For(this).Error(ex);
             }
         }
 

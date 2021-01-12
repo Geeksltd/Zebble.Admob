@@ -1,6 +1,7 @@
 ﻿using Google.MobileAds;
 using System;
 using UIKit;
+using Olive;
 
 namespace Zebble.AdMob
 {
@@ -38,7 +39,7 @@ namespace Zebble.AdMob
             }
             catch (Exception ex)
             {
-                Zebble.Device.Log.Error(ex);
+                Log.For(this).Error(ex);
                 return new byte[0];
             }
         }

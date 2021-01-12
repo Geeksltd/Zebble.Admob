@@ -41,7 +41,7 @@ namespace Zebble.AdMob
             }
             catch (Exception ex)
             {
-                Zebble.Device.Log.Error(ex);
+                Log.For<NativeAdInfo>().Error(ex);
                 return new byte[0];
             }
         }
