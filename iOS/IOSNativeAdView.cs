@@ -110,7 +110,7 @@ namespace Zebble.AdMob
         bool IsDead(out NativeAdView result)
         {
             result = View;
-            return result != null && !result.IsDisposing;
+            return result == null || result.IsDisposing;
         }
     }
 }
