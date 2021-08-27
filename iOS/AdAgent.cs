@@ -3,6 +3,7 @@ using Google.MobileAds;
 using System;
 using Olive;
 using UIKit;
+using System.Linq;
 
 namespace Zebble.AdMob
 {
@@ -28,8 +29,8 @@ namespace Zebble.AdMob
 
             var adRequest = Request.GetDefaultRequest();
 
-            foreach (var id in Config.Get("Admob.iOS.Test.Device.Ids").OrEmpty().Split(',').Trim())
-                adRequest.TestDevices.AddLine(id);
+            var testDevices = Config.Get("Admob.iOS.Test.Device.Ids").OrEmpty().Split(',').Trim().ToArray();
+            MobileAds.SharedInstance.RequestConfiguration.TestDeviceIdentifiers = testDevices;
 
             if (Keywords.HasValue()) adRequest.Keywords = new[] { Keywords };
             Loader.LoadRequest(adRequest);
