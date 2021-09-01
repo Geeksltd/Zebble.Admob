@@ -66,26 +66,28 @@ namespace Zebble.AdMob
             if (ad is null) return;
             if (IsDead(out var view)) return;
 
-            if (ad is FailedNativeAdInfo)
+            try
             {
-                view.HeadLineView.Text = ad.Headline;
-                view.BodyView.Text = ad.Body;
-                view.CallToActionView.Text = ad.CallToAction;
-                return;
-            }
-            else
-            {
-                try
+                if (ad is FailedNativeAdInfo)
                 {
-                    view.Ad.Value = ad;
+                    view.HeadLineView.Text = ad.Headline;
+                    view.BodyView.Text = ad.Body;
+                    view.CallToActionView.Text = ad.CallToAction;
+                }
+                else
+                {
                     NativeView.NativeAd = ad.Native;
                     if (NativeView.MediaView != null)
                         NativeView.MediaView.MediaContent = ad.Native.MediaContent;
                 }
-                catch (Exception ex)
-                {
-                    Log.For(this).Error(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.For(this).Error(ex);
+            }
+            finally
+            {
+                view.Ad.Value = ad;
             }
         }
 
